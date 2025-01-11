@@ -1,5 +1,4 @@
 // src/App.js
-import illustration from './assets/illustration.png'; // Add any image to your assets folder and update the path
 
 function Signup() {
   return (
@@ -62,7 +61,7 @@ function Signup() {
                 placeholder="9876543210"
               />
             </div>
-              <div className="mb-4">
+            <div className="mb-4">
               <label
                 htmlFor="phone"
                 className="block text-gray-700 font-medium mb-2"
@@ -81,7 +80,7 @@ function Signup() {
                 htmlFor="password"
                 className="block text-gray-700 font-medium mb-2"
               >
-                 Password
+                Password
               </label>
               <input
                 type="password"
@@ -100,7 +99,7 @@ function Signup() {
           <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
             <a href="#" className="text-blue-600 underline">
-            Login
+              Login
             </a>
           </p>
         </div>
@@ -112,4 +111,3 @@ function Signup() {
 export default Signup;
 
 // src/index.css (Tailwind CSS configuration should be set up)
-
