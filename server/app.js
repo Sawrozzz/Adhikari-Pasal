@@ -1,8 +1,17 @@
 import express from "express";
+import cookieParser from "cookie-parser";
+import dotenv from 'dotenv';
+
+import userRouter from "./routes/userRouter.js";
+
 const app = express();
 app.use(express.json());
 
-import userRouter from "./routes/userRouter.js";
+app.use(express.urlencoded({extended:true})) //allow use of complex object in url encoded 
+app.use(cookieParser());
+dotenv.config();
+
+
 
 import "dotenv/config";
 import "./config/mongoose-connection.js";
