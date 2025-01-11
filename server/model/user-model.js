@@ -7,7 +7,12 @@ import mongoose from 'mongoose';
     address:String,
     phone:Number,
     picture:String,
+    role:{
+        type:String,
+        enum:['ADMIN','NORMAL'],
+        default:'NORMAL',
+    }
+    
 })
-
 const User = mongoose.model("user",userSchema);
 export default User;
