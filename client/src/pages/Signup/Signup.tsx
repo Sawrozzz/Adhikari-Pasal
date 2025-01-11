@@ -1,6 +1,36 @@
-// src/App.js
+
+import { useState } from "react";
+import useAuthStore from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 const Signup=() =>{
+
+  const {signup} = useAuthStore();
+  
+  const nagivate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    fullName:"",
+    email:"",
+    password:"",
+    address:"",
+    phone:"",
+    role:"NORMAL",
+  });
+
+  const handleChange = (e)=>{
+   setFormData({
+    ...formData,
+    [e.target.name]:e.target.value,
+   });
+  }
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      signup(formData);
+      console.log("clicked");
+      nagivate('/login')
+    };
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Left Section with Image */}
@@ -18,7 +48,7 @@ const Signup=() =>{
           <h1 className="text-3xl font-bold text-blue-600 mb-4">
             Customer Signup
           </h1>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
                 htmlFor="name"
@@ -28,7 +58,10 @@ const Signup=() =>{
               </label>
               <input
                 type="text"
-                id="name"
+                name="fullName"
+                id="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 placeholder="Saroj Adhikari"
               />
@@ -42,7 +75,9 @@ const Signup=() =>{
               </label>
               <input
                 type="email"
-                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 placeholder="saroj@example.com"
               />
@@ -56,7 +91,9 @@ const Signup=() =>{
               </label>
               <input
                 type="text"
-                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 placeholder="9876543210"
               />
@@ -70,7 +107,9 @@ const Signup=() =>{
               </label>
               <input
                 type="text"
-                id="phone"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 placeholder="Ilam Deumai-3"
               />
@@ -84,7 +123,9 @@ const Signup=() =>{
               </label>
               <input
                 type="password"
-                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 placeholder="••••••••"
               />
