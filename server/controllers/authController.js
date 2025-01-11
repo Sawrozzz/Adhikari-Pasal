@@ -128,3 +128,27 @@ export const logout = (req, res) => {
     });
   }
 };
+
+//code for getting all users (except, the admin)
+export const allUsers = async (req, res) => {
+  try {
+    const users = await User.find({ role: { $ne: "ADMIN" } }); // $ne means "not equal"
+    if (!users.length) {
+      return res.status(404).json({
+        message: "No users found",
+        success: false,
+      });
+    }
+    res.status(200).json({
+      message: "Users retrieved successfully",
+      success: true,
+      data: users, // Send the users data in the response
+    });
+  } catch (error) {
+    console.log("Error during getting Users", error.message);
+    res.status(500).json({
+      message: "Server Error",
+      success: false,
+    });
+  }
+};
