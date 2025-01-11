@@ -3,8 +3,19 @@ import User from "../model/user-model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+//code for register user
 export const register = async (req, res) => {
-  const { fullName, email, password, address, phone } = req.body;
+  const { fullName, email, password, address, phone, role } = req.body;
+
+  if (role === "ADMIN") {
+    const existingAdmin = await User.findOne({ role: "ADMIN" });
+    if (existingAdmin) {
+      return res.status(400).json({
+        message: "An ADMIN already exists",
+        success: false,
+      });
+    }
+  }
 
   try {
     if (!fullName || !email || !password || !address || !phone) {
@@ -32,11 +43,12 @@ export const register = async (req, res) => {
       password: hashPassword,
       address,
       phone,
+      role: role || "NORMAL",
     });
     await newUser.save(); // save the user info in database
 
     const token = jwt.sign(
-      { userId: newUser._id, email: newUser.email },
+      { userId: newUser._id, email: newUser.email, role: newUser.role },
       process.env.JWT_SECRECT,
       {
         expiresIn: "3h",
@@ -52,6 +64,50 @@ export const register = async (req, res) => {
     console.log("Error occured", error.message);
     res.status(500).json({
       message: "Server Error",
+    });
+  }
+};
+
+//code for login user
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(400).json({
+        message: "Invalid password",
+        success: false,
+      });
+    }
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRECT,
+      { expiresIn: "3h" }
+    );
+    res.cookie("token", token);
+    res.status(200).json({
+      message: "Login successful",
+      success: true,
+      token,
+      userData: {
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.log("Error while login", error.message);
+    res.status(500).json({
+      message: "Server Error",
+      success: false,
     });
   }
 };
