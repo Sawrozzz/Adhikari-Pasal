@@ -4,7 +4,7 @@ import Header from "./components/Header/Header";
 import Navbar from "./components/NavBar/Navbar";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
-
+import Cart from "./pages/Cart/Cart";
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
       <Header />
       <Navbar />
       <Routes>
+        <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

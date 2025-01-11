@@ -1,6 +1,6 @@
 // src/App.js
 
-function Signup() {
+const Signup=() =>{
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Left Section with Image */}
@@ -98,7 +98,7 @@ function Signup() {
           </form>
           <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
-            <a href="#" className="text-blue-600 underline">
+            <a href="/login" className="text-blue-600 underline">
               Login
             </a>
           </p>
