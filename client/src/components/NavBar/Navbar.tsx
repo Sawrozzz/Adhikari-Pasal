@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import useAuthStore from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { user, isLoggedIn, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () =>{
+    logout();
+    navigate('/');
+  }
 
   return (
     <nav>
@@ -33,11 +39,14 @@ const Navbar = () => {
                   <Link to="/add-product">Add Products</Link>
                 </li>
                 <li className="cursor-pointer hover:text-gray-900">
-                  <Link to="/view-users">View Users</Link>
+                  <Link to="/all-users">View Users</Link>
                 </li>
               </>
             )}
-            <li className="cursor-pointer hover:text-gray-900" onClick={logout}>
+            <li className="cursor-pointer hover:text-gray-900">
+             <Link to="/profile">Profile</Link>
+            </li>
+            <li className="cursor-pointer hover:text-gray-900" onClick={handleLogout}>
               Logout
             </li>
           </>
