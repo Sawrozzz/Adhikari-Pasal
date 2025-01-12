@@ -152,3 +152,25 @@ export const allUsers = async (req, res) => {
     });
   }
 };
+
+
+//code for getting a single user, basically for loggedIn user, but its not in work for now
+export const profile = async(req, res) =>{
+  try{
+
+    const userId = req.params.id;
+    const user = await User.findById(userId).select("-password");
+
+    if(!user){
+       return res.status(404).json({ message: "User not found", success:false });
+    }
+    res.json(user);
+
+  }catch(error){
+     console.log("Error during getting Users", error.message);
+    res.status(500).json({
+      message:"Error while fetching profile",
+      success:false
+    })
+  }
+}
