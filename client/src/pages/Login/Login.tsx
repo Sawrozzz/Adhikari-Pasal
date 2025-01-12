@@ -9,17 +9,17 @@ const Login = () => {
 
    
     const [formData, setFormData] = useState({
-  
       email: "",
       password: "",
     });
 
       const handleChange = (e) => {
-        setFormData({
-          ...formData,
-          [e.target.name]: e.target.value,
-        });
-      };
+        
+          setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+          });
+        };
      const handleLogin = (e) => {
        e.preventDefault();
        login(formData);
