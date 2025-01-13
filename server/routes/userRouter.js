@@ -18,4 +18,5 @@ router.get("/profile/:id", profile)
 router.get("/allUsers",allUsers)
 
 
+
 export default router;
