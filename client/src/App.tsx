@@ -8,6 +8,7 @@ import Cart from "./pages/Cart/Cart";
 import Home from "./pages/Home/Home";
 import AllUsers from "./pages/AllUsers/AllUsers";
 import Profile from "./pages/Profile/Profile";
+import AddProducts from "./pages/Products/AddProducts";
 
 function App() {
   return (
@@ -16,10 +17,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/all-users" element={<AllUsers />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/user/login" element={<Login />} />
+        <Route path="/user/signup" element={<Signup />} />
+        <Route path="/user/all-users" element={<AllUsers />} />
+        <Route path="/user/profile" element={<Profile />} />
+        <Route path="/product/add-product" element={<AddProducts />} />
       </Routes>
     </BrowserRouter>
   );
