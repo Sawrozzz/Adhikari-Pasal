@@ -1,8 +1,10 @@
 import useProductStore from "../../store/productStore";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddProducts = () => {
   const { createProduct } = useProductStore();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -44,7 +46,9 @@ const AddProducts = () => {
     if (formData.image) {
       productData.append("image", formData.image);
     }
-    await createProduct(productData);
+    const result = await createProduct(productData);
+    console.log(result);
+    navigate("/");
   };
 
   return (
