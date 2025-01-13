@@ -5,6 +5,7 @@ const baseURL = "http://localhost:5000/products";
 
 const useProductStore = create((set) => ({
   products: [],
+  allProducts: [],
 
   createProduct: async (productData) => {
     try {
@@ -16,11 +17,30 @@ const useProductStore = create((set) => ({
       set((state) => ({
         products: [...state.products, response.data.product], // Correctly returning the object here
       }));
-      
+
       return response.data;
     } catch (error) {
       console.error("Error while creating product", error);
       alert(error.response?.data?.message || "Failed to create product");
+    }
+  },
+
+  fetchAllProducts: async () => {
+    try {
+      const response = await axios.get(`${baseURL}/all-products`);
+      console.log(response.data.data);
+      
+      if (!response) {
+        throw new Error("Failed to fetch products");
+      }
+
+
+      set({
+        allProducts: response.data.data,
+      });
+    } catch (error) {
+      console.error("Error while fetching products:", error);
+      alert(error);
     }
   },
 }));
