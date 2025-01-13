@@ -5,6 +5,7 @@ import cors from 'cors';
 
 
 import userRouter from "./routes/userRouter.js";
+import productRouter from "./routes/productRouter.js"
 
 const app = express();
 app.use(express.json());
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRouter);
+app.use("/products",productRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running at ${PORT}`);
