@@ -24,10 +24,10 @@ const Navbar = () => {
         {!isLoggedIn ? (
           <>
             <li className="cursor-pointer hover:text-blue-500">
-              <Link to="/login">Login</Link>
+              <Link to="/user/login">Login</Link>
             </li>
             <li className="cursor-pointer hover:text-blue-500">
-              <Link to="/signup">Signup</Link>
+              <Link to="/user/signup">Signup</Link>
             </li>
           </>
         ) : (
@@ -36,15 +36,15 @@ const Navbar = () => {
             {user?.role === "ADMIN" && (
               <>
                 <li className="cursor-pointer hover:text-blue-500">
-                  <Link to="/add-product">Add Products</Link>
+                  <Link to="/product/add-product">Add Products</Link>
                 </li>
                 <li className="cursor-pointer hover:text-blue-500">
-                  <Link to="/all-users">View Users</Link>
+                  <Link to="/user/all-users">View Users</Link>
                 </li>
               </>
             )}
             <li className="cursor-pointer hover:text-blue-500">
-              <Link to="/profile">Profile</Link>
+              <Link to="/user/profile">Profile</Link>
             </li>
             <li
               className="cursor-pointer hover:text-blue-500"
