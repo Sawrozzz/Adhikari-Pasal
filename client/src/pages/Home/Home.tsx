@@ -31,11 +31,11 @@ const Home = () => {
     <div className="h-screen flex flex-col">
       {/* Carousel Section */}
       <div className="h-1/2 w-full">
-        <div className="relative w-full h-full overflow-hidden">
+        <div className="relative w-full h-full overflow-hidden overflow-y-auto">
           <img
             src={carouselImages[currentImageIndex]}
             alt={`Slide ${currentImageIndex + 1}`}
-            className=" w-full h-full object-cover transition-all duration-700 ease-in-out"
+            className="  w-full h-full object-cover transition-all duration-700 ease-in-out"
           />
           {/* Dots for navigation */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
@@ -52,8 +52,8 @@ const Home = () => {
       </div>
 
       {/* Products Section */}
-      <div className="h-1/2 overflow-x-auto mt-2">
-        <div className="flex gap-4 px-5">
+      <div className="h-1/2 flex-wrap mt-2 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
           {allProducts.map((product, index) => (
             <div
               key={product.id || index}
