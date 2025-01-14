@@ -1,10 +1,12 @@
 import Product from "../model/product-model.js";
 
+//code to create product
 export const create = async (req, res) => {
-  const { name, price, description, discount } = req.body;
+  const { name, price,category, description, discount } = req.body;
 
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQinI_44p5jN05YioLyPBhn_1j5tsl7q85rfA&s";
+
 
     
     try {
@@ -15,6 +17,8 @@ export const create = async (req, res) => {
 
       const newProduct = await Product.create({
         name,
+        category,
+        
         price: Number(price),
         discountedPrice:Number(discountedPrice),
         description,
@@ -35,6 +39,7 @@ export const create = async (req, res) => {
   }
 };
 
+//code to get all products
 export const allProducts = async(req, res) =>{
  try{
   const products = await Product.find();
