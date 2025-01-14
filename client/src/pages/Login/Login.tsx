@@ -39,8 +39,8 @@ const Login = () => {
       {/* Right Section with Form */}
       <div className="w-full md:w-1/2 bg-white flex items-center justify-center">
         <div className="p-8 w-full max-w-md">
-          <h1 className="text-3xl font-bold text-blue-600 mb-4">
-             Login Here
+          <h1 className="text-3xl font-bold text-purple-600 mb-4">
+            Login Here
           </h1>
           <form onSubmit={handleLogin}>
             <div className="mb-4">
@@ -56,7 +56,7 @@ const Login = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
                 placeholder="saroj@example.com"
               />
             </div>
@@ -73,20 +73,20 @@ const Login = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
                 placeholder="••••••••"
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors mb-4"
+              className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors mb-4"
             >
               Login
             </button>
           </form>
           <p className="text-center text-gray-600 mt-4">
             Don't have an account?{" "}
-            <a href="/signup" className="text-blue-600 underline">
+            <a href="/signup" className="text-purple-600 underline">
               Create New
             </a>
           </p>
