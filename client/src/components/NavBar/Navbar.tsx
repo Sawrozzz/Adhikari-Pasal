@@ -13,8 +13,8 @@ const Navbar = () => {
 
   return (
     <nav>
-      <ul className="flex gap-10 text-white">
-        <li className="cursor-pointer hover:text-blue-500">
+      <ul className="flex  gap-10 text-purple-500">
+        <li className="cursor-pointer hover:text-purple-900">
           <Link to="/">Home</Link>
         </li>
         <li className="cursor-pointer hover:text-blue-500">
