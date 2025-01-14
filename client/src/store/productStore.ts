@@ -6,6 +6,7 @@ const baseURL = "http://localhost:5000/products";
 const useProductStore = create((set) => ({
   products: [],
   allProducts: [],
+  searchResults: [],
 
   createProduct: async (productData) => {
     try {
@@ -29,11 +30,10 @@ const useProductStore = create((set) => ({
     try {
       const response = await axios.get(`${baseURL}/all-products`);
       console.log(response.data.data);
-      
+
       if (!response) {
         throw new Error("Failed to fetch products");
       }
-
 
       set({
         allProducts: response.data.data,
@@ -41,6 +41,24 @@ const useProductStore = create((set) => ({
     } catch (error) {
       console.error("Error while fetching products:", error);
       alert(error);
+    }
+  },
+
+  searchProducts: async (category) => {
+    try {
+      const response = await axios.get(
+        `${baseURL}/search?category=${category}`
+      );
+      if (!response.data) {
+        throw new Error("Failed to fetch products");
+      }
+      console.log("Search Results:", response.data); 
+      set({
+        searchResults: response.data.data,
+      });
+    } catch (error) {
+      console.error("Error while searching products:", error);
+      alert(error.response?.data?.message || "Failed to search products");
     }
   },
 }));
