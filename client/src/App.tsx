@@ -9,6 +9,7 @@ import Home from "./pages/Home/Home";
 import AllUsers from "./pages/AllUsers/AllUsers";
 import Profile from "./pages/Profile/Profile";
 import AddProducts from "./pages/Products/AddProducts";
+import SearchedProducts from "./pages/Products/SearchedProducts";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/user/all-users" element={<AllUsers />} />
         <Route path="/user/profile" element={<Profile />} />
         <Route path="/product/add-product" element={<AddProducts />} />
+        <Route path="/product/search" element={<SearchedProducts />} />
       </Routes>
     </BrowserRouter>
   );
