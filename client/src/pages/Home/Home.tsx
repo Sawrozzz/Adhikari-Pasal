@@ -35,7 +35,7 @@ const Home = () => {
           <img
             src={carouselImages[currentImageIndex]}
             alt={`Slide ${currentImageIndex + 1}`}
-            className="w-full h-full object-cover transition-all duration-700 ease-in-out"
+            className=" w-full h-full object-cover transition-all duration-700 ease-in-out"
           />
           {/* Dots for navigation */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
@@ -52,7 +52,7 @@ const Home = () => {
       </div>
 
       {/* Products Section */}
-      <div className="h-1/2 overflow-x-auto">
+      <div className="h-1/2 overflow-x-auto mt-2">
         <div className="flex gap-4 px-5">
           {allProducts.map((product, index) => (
             <div
@@ -61,7 +61,7 @@ const Home = () => {
             >
               <div className="relative">
                 <span className="absolute top-2 left-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  Category (Soon..)
+                  Category ({product.category})
                 </span>
                 <img
                   src={product.image}
