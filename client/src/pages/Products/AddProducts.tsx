@@ -7,6 +7,7 @@ const AddProducts = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
+    category:"",
     price: "",
     discount: "",
     description: "",
@@ -40,6 +41,7 @@ const AddProducts = () => {
 
     const productData = new FormData();
     productData.append("name", formData.name);
+    productData.append("category", formData.category);
     productData.append("price", formData.price);
     productData.append("description", formData.description);
     productData.append("discount", formData.discount);
@@ -67,7 +69,18 @@ const AddProducts = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+          />
+        </div>
+        <div>
+          <label className="block font-medium mb-2">Product Category</label>
+          <input
+            type="text"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
           />
         </div>
 
@@ -79,7 +92,7 @@ const AddProducts = () => {
             value={formData.price}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
           />
         </div>
         <div>
@@ -89,7 +102,7 @@ const AddProducts = () => {
             name="discount"
             value={formData.discount}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
           />
         </div>
 
@@ -100,8 +113,8 @@ const AddProducts = () => {
             required
             value={formData.description}
             onChange={handleChange}
-            rows="4"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            rows="3"
+            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
           ></textarea>
         </div>
 
@@ -112,7 +125,7 @@ const AddProducts = () => {
             name="image"
             ref={fileInputRef} // Attach ref to the file input
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
           />
           {formData.image && (
             <div className="mt-2">
@@ -130,7 +143,7 @@ const AddProducts = () => {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
+          className="w-full bg-indigo-600 text-white py-1 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
         >
           Add Product
         </button>
