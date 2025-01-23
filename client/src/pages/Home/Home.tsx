@@ -1,8 +1,34 @@
 import { useState, useEffect } from "react";
 import useProductStore from "../../store/productStore";
+import useCartStore from "../../store/cartStore";
+import useAuthStore from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { allProducts, fetchAllProducts } = useProductStore();
+  const { addToCart, loading, error } = useCartStore();
+  const { isLoggedIn, user } = useAuthStore();
+
+  const navigate = useNavigate();
+
+  const handleOnAddToCart = async (productId) => {
+    // Check if the user is logged in and if the email is available
+    if (!isLoggedIn || !user || !user.email) {
+      alert("You must sign up and log in to your account to add products.");
+      navigate("/user/login");
+      return;
+    }
+
+    // Use the email from the user object to add to the cart
+    const email = user.email;
+    if (!productId) {
+      console.error("Product ID is undefined");
+      return;
+    }
+
+    await addToCart(email, productId);
+    alert("Product added to cart successfully");
+  };
 
   // State for the carousel
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -86,8 +112,14 @@ const Home = () => {
                   {product.description || "No Description available"}
                 </p>
                 <div className="mt-4 flex gap-2">
-                  <button className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100">
-                    Add to Cart
+                  <button
+                    onClick={() => {
+                      handleOnAddToCart(product._id);
+                    }}
+                    disabled={loading}
+                    className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100"
+                  >
+                    {loading ? "Adding..." : "Add to Cart"}
                   </button>
                   <button className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700">
                     Buy Now
