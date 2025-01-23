@@ -17,9 +17,6 @@ const Navbar = () => {
         <li className="cursor-pointer hover:text-purple-900">
           <Link to="/">Home</Link>
         </li>
-        <li className="cursor-pointer hover:text-blue-500">
-          <Link to="/cart">Cart</Link>
-        </li>
 
         {!isLoggedIn ? (
           <>
@@ -44,8 +41,12 @@ const Navbar = () => {
               </>
             )}
             <li className="cursor-pointer hover:text-blue-500">
+              <Link to="/cart">My Cart</Link>
+            </li>
+            <li className="cursor-pointer hover:text-blue-500">
               <Link to="/user/profile">Profile</Link>
             </li>
+
             <li
               className="cursor-pointer hover:text-blue-500"
               onClick={handleLogout}
