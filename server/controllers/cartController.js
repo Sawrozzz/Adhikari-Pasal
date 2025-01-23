@@ -66,11 +66,13 @@ export const displayCart = async (req, res) => {
         success: false,
       });
     }
+  const cartCount = user.cart.length;
     // Return the cart with populated product details
     return res.status(200).json({
       message: "Cart fetched successfully",
       success: true,
       cart: user.cart,
+      cartCount: cartCount,
     });
   } catch (error) {
     console.error("Error while diplaying Carts", error.message);
