@@ -29,7 +29,6 @@ const useProductStore = create((set) => ({
   fetchAllProducts: async () => {
     try {
       const response = await axios.get(`${baseURL}/all-products`);
-      console.log(response.data.data);
 
       if (!response) {
         throw new Error("Failed to fetch products");
