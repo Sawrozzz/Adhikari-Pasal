@@ -1,72 +1,77 @@
+import { useEffect, useState } from "react";
+import useCartStore from "../../store/cartStore";
+import useAuthStore from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
+
 const Cart = () => {
+  const { cart, displayCart, cartCount, removeCart, loading } = useCartStore();
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    displayCart(user.email);
+  }, []);
+
+  //to delete cart
+  const handleRemoveCart = async (productId) => {
+    if (!user || !user.email) {
+      alert("You must sign up and log in to your account to delete cart.");
+      navigate("/user/login");
+      return;
+    }
+    const email = user.email;
+    if (!productId) {
+      console.error("Product ID is undefined");
+      return;
+    }
+    removeCart(email, productId);
+    navigate("/cart");
+    // alert("cart deleted successfully")
+  };
+
+  const calculateTotalAmount = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
   return (
-    <div className="font-sans w-full min-h-screen flex flex-col lg:flex-row items-start px-5 lg:px-20 py-10 lg:py-20 gap-10">
-      <div className="w-full lg:w-[30%] rounded-md overflow-hidden">
-        <div className="h-80 flex justify-center items-center bg-gray-200">
-          <img
-            className="h-[15rem] w-[20rem] object-contain"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfsKcLtcDvagrqCxPXwH7LG9Nddg1K83l6tQ&s"
-            alt="image"
-          />
+    <div className="flex flex-col sm:flex-row justify-between px-2">
+      <section className="flex flex-col gap-8 px-2 w-[60%] h-[45rem] overflow-y-scroll scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-900 scrollbar-track-gray-100">
+        <h2 className="text-2xl font-mono">Total Cart: {cartCount}</h2>
+        <div className="flex flex-col gap-4 sm:flex-row flex-wrap ">
+          {cart.map((item, index) => (
+            <div key={index} className="lg:w-[30%] rounded-md overflow-hidden">
+              <div className="flex justify-center items-center">
+                <img
+                  className="w-36 h-36 object-cover rounded"
+                  src={item.image}
+                  alt={item.name}
+                />
+              </div>
+              <h3 className="text-xl text-black text-center">{item.name}</h3>
+              <div className="flex items-center justify-between px-5 py-3 bg-purple-500">
+                <h4 className="text-lg">Price: {item.price}</h4>
+                <button
+                  onClick={() => handleRemoveCart(item._id)}
+                  disabled={loading}
+                  className="bg-red-600 px-2 py-1 rounded hover:bg-red-700"
+                >
+                  {loading ? "Deleting..." : "Delete Cart"}
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="w-full flex justify-between px-5 py-4 bg-gray-100">
-          <h3 className="text-2xl">Shoes</h3>
-          <div className="flex items-center gap-2">
-            <i className="w-7 h-7 bg-white flex rounded-full items-center justify-center font-bold">
-              +
-            </i>
-            <div className="px-2 py-1 rounded-md bg-white text-black">01</div>
-            <i className="w-7 h-7 bg-white flex rounded-full items-center justify-center font-bold">
-              -
-            </i>
-          </div>
-        </div>
-        <div className="flex items-center justify-between px-5 py-3 bg-gray-100">
-          <h4 className="text-lg">Net Total</h4>
-          <h2 className="text-lg">Rs 2000</h2>
-        </div>
+      </section>
+      <div class="flex items-center justify-center sm:flex-row">
+        <div class="border-l-2 border-black  h-[100%]"></div>
       </div>
-      <div className="w-full lg:w-[70%]">
-        <h3 className="text-xl">Price Breakdown</h3>
-        <div className="px-5 lg:px-10 mt-5">
-          <div className="flex mt-2">
-            <h4 className="w-1/3">Actual Price</h4>
-            <h4>Rs 5000</h4>
-          </div>
-          <div className="flex mt-2">
-            <h4 className="w-1/3">Discount Percentage</h4>
-            <h4>10%</h4>
-          </div>
-          <div className="flex mt-2">
-            <h4 className="w-1/3">Discounted Price</h4>
-            <h4>Rs 4500</h4>
-          </div>
-          <div className="flex mt-2">
-            <h4 className="w-1/3">Platform Fee</h4>
-            <h4>Rs 20</h4>
-          </div>
-          <div className="flex mt-2">
-            <h4 className="w-1/3">Shipping Fee</h4>
-            <h4>FREE</h4>
-          </div>
+      <section className="flex flex-col w-[35%]">
+        <h2>Price Breakdown</h2>
+        <div class="flex mt-5">
+          <h3 class="w-1/3 text-xl">Total Amount</h3>
+          <h3 class="font-semibold text-xl text-green-700">Rs 3000</h3>
         </div>
-        <div className="w-full h-[1px] bg-black mt-10"></div>
-        <div className="flex mt-5">
-          <h3 className="w-1/3 text-xl">Total Amount</h3>
-          <h3 className="font-semibold text-xl text-purple-700">Rs 4520</h3>
-        </div>
-        <div className="mt-5 flex flex-col lg:flex-row gap-5">
-          <button className="w-full lg:w-1/4 bg-purple-500 text-white py-2 rounded-md hover:bg-purple-800">
-            Buy Now
-          </button>
-          <button
-            type="submit"
-            className=" w-full lg:w-1/4 py-2 px-4 border bg-gray-300 border-gray-300 text-gray-700 rounded-md hover:bg-red-500"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+        <h3>Buy Now</h3>
+      </section>
     </div>
   );
 };
