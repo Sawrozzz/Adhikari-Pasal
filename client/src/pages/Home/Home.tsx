@@ -4,13 +4,14 @@ import useCartStore from "../../store/cartStore";
 import useAuthStore from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
 
+
 const Home = () => {
   const { allProducts, fetchAllProducts } = useProductStore();
   const { addToCart, loading, error } = useCartStore();
   const { isLoggedIn, user } = useAuthStore();
 
   const navigate = useNavigate();
-
+// handing add to cart
   const handleOnAddToCart = async (productId) => {
     // Check if the user is logged in and if the email is available
     if (!isLoggedIn || !user || !user.email) {
@@ -28,6 +29,7 @@ const Home = () => {
 
     await addToCart(email, productId);
     alert("Product added to cart successfully");
+    // navigate("/cart")
   };
 
   // State for the carousel
