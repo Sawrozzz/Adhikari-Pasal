@@ -66,7 +66,7 @@ export const displayCart = async (req, res) => {
         success: false,
       });
     }
-  const cartCount = user.cart.length;
+    const cartCount = user.cart.length;
     // Return the cart with populated product details
     return res.status(200).json({
       message: "Cart fetched successfully",
@@ -85,7 +85,9 @@ export const displayCart = async (req, res) => {
 
 export const deleteCart = async (req, res) => {
   try {
-    const { email, productId } = req.body;
+    const {email} = req.body;
+    const productId = req.params.id;
+
     if (!email || !productId) {
       return res.status(400).json({
         message: "Email or Product ID is missing",
