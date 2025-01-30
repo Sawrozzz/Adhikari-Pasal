@@ -2,7 +2,6 @@ import User from "../model/user-model.js";
 import { cartItem } from "../model/cart-model.js";
 import Product from "../model/product-model.js";
 
-
 //code to add product to cart
 export const addToCart = async (req, res) => {
   try {
@@ -155,6 +154,85 @@ export const deleteCart = async (req, res) => {
     console.error("Error while deleting Carts", error.message);
     res.status(500).json({
       message: "Server Error while deleting carts",
+      success: false,
+    });
+  }
+};
+
+//code for update cart
+export const updateCart = async (req, res) => {
+  try {
+    const { email, quantity } = req.body;
+    const cartId = req.params.id;
+    if (!email || !quantity || !cartId) {
+      return res.status(400).json({
+        message: "Email, cartId, and quantity are required",
+        success: false,
+      });
+    }
+    //find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    //find cartItem
+    const cartItemToUpdate = await cartItem.findById({
+      _id: cartId,
+    });
+    if (!cartItemToUpdate) {
+      return res.status(404).json({
+        message: "Cart not found",
+        success: false,
+      });
+    }
+
+    //find product for price calculation
+
+    const product = await Product.findById(cartItemToUpdate.product);
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+        success: false,
+      });
+    }
+
+    //Update the cart item quantity, price, and discounted price
+    cartItemToUpdate.quantity = quantity;
+    cartItemToUpdate.price = product.price * quantity;
+    cartItemToUpdate.discountedPrice = product.discountedPrice * quantity;
+
+    await cartItemToUpdate.save();
+
+    // Include the product details (including image) in the response
+    const updatedCartItem = {
+      ...cartItemToUpdate._doc,
+      product: {
+        ...product._doc, // Include product details (like image, name, etc.)
+      },
+    };
+
+    //update user cart array
+
+    const userCartIndex = user.cart.findIndex(
+      (itemId) => itemId.toString() === cartId
+    );
+    if (userCartIndex !== -1) {
+      user.cart[userCartIndex] = cartItemToUpdate._id;
+      await user.save();
+    }
+    return res.status(200).json({
+      message: "Cart item updated successfully",
+      success: true,
+      cartItem: updatedCartItem,
+    });
+  } catch (error) {
+    console.error("Error while updating cart", error.message);
+    return res.status(500).json({
+      message: "Error occurs while updating cart",
       success: false,
     });
   }
