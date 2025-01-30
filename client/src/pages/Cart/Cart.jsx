@@ -9,7 +9,7 @@ const Cart = () => {
   const navigate = useNavigate();
   useEffect(() => {
     displayCart(user.email);
-  }, []);
+  }, [user]);
 
   //to delete cart
   const handleRemoveCart = async (productId) => {
@@ -42,13 +42,15 @@ const Cart = () => {
               <div className="flex justify-center items-center">
                 <img
                   className="w-36 h-36 object-cover rounded"
-                  src={item.image}
-                  alt={item.name}
+                  src={item.product?.image}
+                  alt={item.product?.name}
                 />
               </div>
               <h3 className="text-xl text-black text-center">{item.name}</h3>
               <div className="flex items-center justify-between px-5 py-3 bg-purple-500">
                 <h4 className="text-lg">Price: {item.price}</h4>
+                <h2>Discounted Price: {item.discountedPrice}</h2>
+                <h4>Quantity: {item.quantity}</h4>
                 <button
                   onClick={() => handleRemoveCart(item._id)}
                   disabled={loading}

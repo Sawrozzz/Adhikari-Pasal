@@ -12,25 +12,26 @@ const Home = () => {
 
   const navigate = useNavigate();
 // handing add to cart
-  const handleOnAddToCart = async (productId) => {
-    // Check if the user is logged in and if the email is available
-    if (!isLoggedIn || !user || !user.email) {
-      alert("You must sign up and log in to your account to add products.");
-      navigate("/user/login");
-      return;
-    }
+const handleOnAddToCart = async (productId, quantity = 1) => {
+  // Check if the user is logged in and if the email is available
+  if (!isLoggedIn || !user || !user.email) {
+    alert("You must sign up and log in to your account to add products.");
+    navigate("/user/login");
+    return;
+  }
 
-    // Use the email from the user object to add to the cart
-    const email = user.email;
-    if (!productId) {
-      console.error("Product ID is undefined");
-      return;
-    }
+  // Use the email from the user object
+  const email = user.email;
+  if (!productId) {
+    console.error("Product ID is undefined");
+    return;
+  }
 
-    await addToCart(email, productId);
-    alert("Product added to cart successfully");
-    // navigate("/cart")
-  };
+  // Call addToCart with quantity
+  await addToCart(email, productId, quantity);
+
+  alert("Product added to cart successfully");
+};
 
   // State for the carousel
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
