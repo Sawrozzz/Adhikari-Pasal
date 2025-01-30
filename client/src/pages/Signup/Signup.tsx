@@ -29,7 +29,7 @@ const Signup=() =>{
       e.preventDefault();
       signup(formData);
       console.log("clicked");
-      nagivate('/login')
+      nagivate('/user/login')
     };
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -139,7 +139,7 @@ const Signup=() =>{
           </form>
           <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
-            <a href="/login" className="text-purple-600 underline">
+            <a href="/user/login" className="text-purple-600 underline">
               Login
             </a>
           </p>
