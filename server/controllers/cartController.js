@@ -1,53 +1,70 @@
 import User from "../model/user-model.js";
+import { cartItem } from "../model/cart-model.js";
 import Product from "../model/product-model.js";
 
-// const findProductToCart = async(req, res)=>{
-//     let products = await Product.find()
-// }
 
+//code to add product to cart
 export const addToCart = async (req, res) => {
   try {
-    let email = req.body.email;
+    const { email, quantity } = req.body;
     const productId = req.params.id;
-    if (!email || !productId) {
-      return res.status(400).json({
-        message: "Email or Product ID is missing",
-        success: false,
-      });
-    }
-    console.log("Email:", email);
-    console.log("Product ID:", productId);
-    let user = await User.findOne({ email: email });
+
+    //find user
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "User not found",
         success: false,
       });
     }
-    let product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        message: "Product not found",
-        success: false,
-      });
-    }
+    // Find product
+    const product = await Product.findById(productId);
+    if (!product)
+      return res
+        .status(404)
+        .json({ message: "Product not found", success: false });
 
-    user.cart.push(productId);
-    await user.save();
-    return res.status(200).json({
-      message: "Product added to cart successfully",
+    let cartItemEntry = await cartItem.findOne({ product: productId });
+    if (cartItemEntry) {
+      cartItemEntry.quantity += quantity || 1;
+      cartItemEntry.price = product.price * cartItemEntry.quantity;
+      cartItemEntry.discountedPrice = product.discountedPrice
+        ? Math.floor(product.discountedPrice * cartItemEntry.quantity)
+        : 0;
+      await cartItemEntry.save();
+    } else {
+      //create new cart item
+      cartItemEntry = new cartItem({
+        product: productId,
+        quantity: quantity || 1,
+        price: product.price * (quantity || 1),
+        discountedPrice: product.discountedPrice
+          ? Math.floor(product.discountedPrice * (quantity || 1))
+          : 0,
+      });
+      await cartItemEntry.save();
+    }
+    //add to user's cart if not already added
+
+    if (!user.cart.includes(cartItemEntry._id)) {
+      user.cart.push(cartItemEntry._id);
+      await user.save();
+    }
+    res.status(200).json({
+      message: "Product added to cart",
+      cart: cartItemEntry,
       success: true,
-      product: product,
     });
   } catch (error) {
-    console.log("Error during adding on carts", error.message);
+    console.error("Error while adding to cart", error.message);
     res.status(500).json({
-      message: "Error while adding on cart",
+      message: "Fail to add to cart",
       success: false,
     });
   }
 };
 
+//code to display cart
 export const displayCart = async (req, res) => {
   try {
     const { email } = req.query;
@@ -59,7 +76,13 @@ export const displayCart = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email }).populate("cart");
+    const user = await User.findOne({ email }).populate({
+      path: "cart",
+      populate: {
+        path: "product",
+        model: "product",
+      },
+    });
     if (!user) {
       return res.status(404).json({
         message: "User not found",
@@ -82,13 +105,13 @@ export const displayCart = async (req, res) => {
     });
   }
 };
-
+//code to delete cart
 export const deleteCart = async (req, res) => {
   try {
-    const {email} = req.body;
-    const productId = req.params.id;
+    const { email } = req.body;
+    const cartId = req.params.id;
 
-    if (!email || !productId) {
+    if (!email || !cartId) {
       return res.status(400).json({
         message: "Email or Product ID is missing",
         success: false,
@@ -101,7 +124,26 @@ export const deleteCart = async (req, res) => {
         success: false,
       });
     }
-    user.cart = user.cart.filter((id) => id.toString() !== productId);
+
+    // console.log("user",user);
+    // Find and delete the cart item for this product
+    const cartDelete = await cartItem.findOneAndDelete({
+      _id: cartId,
+    });
+
+    // console.log(cartItem);
+
+    if (!cartDelete) {
+      return res.status(404).json({
+        message: "Cart item not found",
+        success: false,
+      });
+    }
+
+    // Remove cartItem reference from the user's cart array
+    user.cart = user.cart.filter(
+      (cartItemId) => cartItemId.toString() !== cartId.toString()
+    );
     await user.save();
 
     return res.status(200).json({
