@@ -10,6 +10,7 @@ import AllUsers from "./pages/AllUsers/AllUsers";
 import Profile from "./pages/Profile/Profile";
 import AddProducts from "./pages/Products/AddProducts";
 import SearchedProducts from "./pages/Products/SearchedProducts";
+import Dashboard from "./pages/AdminDashboard/Dashboard";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/user/profile" element={<Profile />} />
         <Route path="/product/add-product" element={<AddProducts />} />
         <Route path="/product/search" element={<SearchedProducts />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
