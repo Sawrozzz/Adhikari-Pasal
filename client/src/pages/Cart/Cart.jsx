@@ -11,14 +11,17 @@ const Cart = () => {
     removeCart,
     loading,
     updateCartQuantity,
+    resetCartNotification,
+    totalDiscountedPrice,
   } = useCartStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
   useEffect(() => {
     if (user?.email) {
       displayCart(user.email);
+      resetCartNotification();
     }
-  }, [user, displayCart]);
+  }, [user, displayCart, resetCartNotification]);
 
   //increase quantity
     const handleIncreaseQuantity = (
@@ -125,7 +128,7 @@ const Cart = () => {
           <h3 class="font-semibold text-2xl text-green-700">
             Rs{" "}
             {cart.reduce(
-              (total, item) => total + item.discountedPrice * item.quantity,
+              (total, item) => total + item.discountedPrice,
               0
             )}
           </h3>
