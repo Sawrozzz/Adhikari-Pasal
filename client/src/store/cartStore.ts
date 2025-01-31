@@ -10,6 +10,7 @@ const useCartStore = create((set) => ({
   totalAmount: 0,
   loading: false,
   error: null,
+  cartNotification: 0,
 
   addToCart: async (email: string, productId: string, quantity: number = 1) => {
     set({ loading: true, error: null });
@@ -19,43 +20,69 @@ const useCartStore = create((set) => ({
         quantity,
       });
 
-      const updatedCartItem = response.data.cartItemEntry; // Get the new or updated cart item
+      const updatedCartItem = response.data.cart; // Get the new or updated cart item
+      console.log(updatedCartItem);
 
       set((state) => {
-        // Check if the product already exists in the cart
-        const existingCartItemIndex = state.cart.findIndex(
-          (item) => item.product._id === updatedCartItem.product._id
-        );
+        try {
+          // Ensure `updatedCartItem` exists before proceeding
+          if (!updatedCartItem || !updatedCartItem.product) {
+            console.error(
+              "🚨 Error: updatedCartItem is undefined or invalid",
+              updatedCartItem
+            );
+            return state; // Return previous state to prevent breaking Zustand
+          }
 
-        let updatedCart;
-        if (existingCartItemIndex !== -1) {
-          // Update existing cart item
-          updatedCart = [...state.cart];
-          updatedCart[existingCartItemIndex] = updatedCartItem;
-        } else {
-          // Add new cart item
-          updatedCart = [...state.cart, updatedCartItem];
-        }
+          // Find index of existing cart item
+          const existingCartItemIndex = state.cart.findIndex(
+            (item) => item?.product?._id === updatedCartItem.product._id
+          );
 
-        // Recalculate the total discounted price for the entire cart
-        const newTotalDiscountedPrice = updatedCart.reduce(
-          (total, item) => total + item.discountedPrice * item.quantity,
-          0
-        );
+          let updatedCart;
+          if (existingCartItemIndex !== -1) {
+            // Update existing item in cart
+            updatedCart = [...state.cart];
+            updatedCart[existingCartItemIndex] = updatedCartItem;
+          } else {
+            // Add new item to cart
+            updatedCart = [...state.cart, updatedCartItem];
+          }
 
-        return {
-          cart: updatedCart,
-          cartCount: updatedCart.reduce(
-            (count, item) => count + item.quantity,
+          // 🛠 Fix: Prevent `reduce` from breaking if `updatedCart` has `undefined` items
+          const validCartItems = updatedCart.filter(
+            (item) => item && item.discountedPrice
+          );
+
+          // Calculate total discounted price safely
+          const newTotalDiscountedPrice = validCartItems.reduce(
+            (total, item) => total + item.discountedPrice * item.quantity,
             0
-          ),
-          totalDiscountedPrice: newTotalDiscountedPrice, // Update the total price
-          loading: false,
-        };
+          );
+
+          return {
+            cart: updatedCart,
+            cartCount: validCartItems.reduce(
+              (count, item) => count + item.quantity,
+              0
+            ),
+            totalDiscountedPrice: newTotalDiscountedPrice,
+            cartNotification: state.cartNotification + 1,
+            loading: false,
+          };
+        } catch (error) {
+          console.error("🚨 Error inside Zustand `set` function:", error);
+          return state; // Return previous state if an error occurs
+        }
       });
+
+      console.log("Cart Notification Updated:");
     } catch (error) {
       set({ error: error.message, loading: false });
     }
+  },
+  resetCartNotification: () => {
+    set({ cartNotification: 0 }); // ✅ Reset notification count when viewing cart
   },
 
   displayCart: async (email: string) => {
@@ -69,12 +96,13 @@ const useCartStore = create((set) => ({
           cart: data.cart || [], // Ensure cart is always an array
           cartCount: data.cartCount,
           loading: false,
+          cartNotification: 0,
         });
       } else {
         console.error(data.message);
       }
     } catch (error) {
-     set({loading:false, error:error.message})
+      set({ loading: false, error: error.message });
     }
   },
 

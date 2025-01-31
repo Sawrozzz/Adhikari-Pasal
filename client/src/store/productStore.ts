@@ -9,6 +9,7 @@ const useProductStore = create((set) => ({
   searchResults: [],
 
   createProduct: async (productData) => {
+    
     try {
       const response = await axios.post(`${baseURL}/create`, productData, {
         headers: {
