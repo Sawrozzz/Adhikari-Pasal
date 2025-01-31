@@ -202,8 +202,10 @@ export const updateCart = async (req, res) => {
 
     //Update the cart item quantity, price, and discounted price
     cartItemToUpdate.quantity = quantity;
-    cartItemToUpdate.price = product.price * quantity;
-    cartItemToUpdate.discountedPrice = product.discountedPrice * quantity;
+    cartItemToUpdate.price = Math.floor(product.price * quantity);
+    cartItemToUpdate.discountedPrice = Math.floor(
+      product.discountedPrice * quantity
+    );
 
     await cartItemToUpdate.save();
 

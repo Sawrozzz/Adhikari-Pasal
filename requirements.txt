@@ -1,10 +1,12 @@
 New features to be added:
 //Basic features need to implement
-1. Delete and update(if needed not now though) of individual products.
+1. Delete and update(if needed not now though) of individual products.✅
 2. Search and filter of products ✅
-3. Add to cart Pending (cart design) + functionality
+3. Add to cart Pending (cart design) + functionality ✅
 4. Payment Integration(Khalti or Esewa) Pending
 5. Admin Dashboard for overall Activities LookUp
+6. Cart Notification✅
+7. User profile Image Upload.
 
 //Features added in free time
 6. Profile Page Design more elagently
