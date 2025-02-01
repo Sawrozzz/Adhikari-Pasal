@@ -67,7 +67,8 @@ const Cart = () => {
           {cart.map((item, index) => (
             <div
               key={index}
-              className="lg:w-[30%] rounded-md overflow-hidden bg-slate-200"
+              className="lg:w-[30%] rounded-md overflow-hidden bg-slate-200 cursor-pointer"
+              title={item.product?.name}
             >
               <div className="flex justify-center items-center">
                 <img
@@ -78,31 +79,27 @@ const Cart = () => {
               </div>
               <h3 className="text-xl text-black text-center">{item.name}</h3>
               <div className="flex flex-col px-5 py-3 bg-purple-500">
-                <h4 className="text-lg">Price: {item.price}</h4>
-                <h2>Discounted Price: {item.discountedPrice}</h2>
+                <h2 className="text-lg font-semibold">
+                  Discounted Price: {item.discountedPrice}
+                </h2>
+                <h4 className="line-through">Price: {item.price}</h4>
                 <h4 className="flex justify-between mb-2">
                   <span>Quantity: {item.quantity}</span>
                   <span
                     onClick={() =>
-                      handleIncreaseQuantity(
-                        item._id,
-                        item.quantity,
-                    
-                      )
+                      handleIncreaseQuantity(item._id, item.quantity)
                     }
                     className=" border border-black w-8 h-8 text-center rounded-full text-xl cursor-pointer hover:bg-purple-800"
+                    title="Add One"
                   >
                     +
                   </span>
                   <span
                     onClick={() =>
-                      handleDecreaseQuantity(
-                        item._id,
-                        item.quantity,
-                  
-                      )
+                      handleDecreaseQuantity(item._id, item.quantity)
                     }
                     className=" border border-black w-8 h-8 text-center rounded-full text-xl cursor-pointer hover:bg-purple-800"
+                    title="Remove One"
                   >
                     -
                   </span>
@@ -126,11 +123,7 @@ const Cart = () => {
         <div class="flex mt-5 mb-7">
           <h3 class="w-2/4 text-2xl">Total Amount to be Paid:</h3>
           <h3 class="font-semibold text-2xl text-green-700">
-            Rs{" "}
-            {cart.reduce(
-              (total, item) => total + item.discountedPrice,
-              0
-            )}
+            Rs {cart.reduce((total, item) => total + item.discountedPrice, 0)}
           </h3>
         </div>
         <h3 className="border w-1/3 h-10 bg-green-500 flex justify-center items-center rounded hover:bg-green-600 cursor-pointer">

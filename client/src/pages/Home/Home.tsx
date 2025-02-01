@@ -4,34 +4,52 @@ import useCartStore from "../../store/cartStore";
 import useAuthStore from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
 
-
 const Home = () => {
-  const { allProducts, fetchAllProducts } = useProductStore();
+  const { allProducts, fetchAllProducts, removeProduct } = useProductStore();
   const { addToCart, loading, error } = useCartStore();
   const { isLoggedIn, user } = useAuthStore();
+  const [products, setProducts] = useState(allProducts);
 
   const navigate = useNavigate();
-// handing add to cart
-const handleOnAddToCart = async (productId, quantity = 1) => {
-  // Check if the user is logged in and if the email is available
-  if (!isLoggedIn || !user || !user.email) {
-    alert("You must sign up and log in to your account to add products.");
-    navigate("/user/login");
-    return;
-  }
+  // handing add to cart
+  const handleOnAddToCart = async (productId: string, quantity = 1) => {
+    if (!isLoggedIn || !user || !user.email) {
+      alert("You must sign up and log in to your account to add products.");
+      navigate("/user/login");
+      return;
+    }
 
-  // Use the email from the user object
-  const email = user.email;
-  if (!productId) {
-    console.error("Product ID is undefined");
-    return;
-  }
+    const email = user.email;
+    if (!productId) {
+      console.error("Product ID is undefined");
+      return;
+    }
 
-  // Call addToCart with quantity
-  await addToCart(email, productId, quantity);
+    await addToCart(email, productId, quantity);
+    alert("Product added to cart successfully");
+  };
 
-  alert("Product added to cart successfully");
-};
+  const handleRemoveProduct = async (productId: string) => {
+    if (!user || !user.email) {
+      alert("You must sign up and log in to your account to delete cart.");
+      navigate("/user/login");
+      return;
+    }
+
+    if (user.role === "NORMAL") {
+      alert("Only Admin can remove the product");
+      navigate("/");
+      return;
+    }
+    const email = user.email;
+
+    if (!productId) {
+      console.error("Product ID is undefined");
+      return;
+    }
+    removeProduct(productId, email);
+    navigate("/");
+  };
 
   // State for the carousel
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -45,7 +63,13 @@ const handleOnAddToCart = async (productId, quantity = 1) => {
 
   useEffect(() => {
     fetchAllProducts();
+  }, [fetchAllProducts]);
 
+  useEffect(() => {
+    setProducts(allProducts);
+  }, [allProducts]);
+
+  useEffect(() => {
     // Automatically change the carousel image every 2 seconds
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) =>
@@ -54,7 +78,7 @@ const handleOnAddToCart = async (productId, quantity = 1) => {
     }, 2000);
 
     return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [fetchAllProducts, carouselImages.length]);
+  }, [carouselImages.length]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -124,9 +148,20 @@ const handleOnAddToCart = async (productId, quantity = 1) => {
                   >
                     {loading ? "Adding..." : "Add to Cart"}
                   </button>
-                  <button className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-                    Buy Now
-                  </button>
+                  {user && user.role === "ADMIN" ? (
+                    <button
+                      onClick={() => {
+                        handleRemoveProduct(product._id);
+                      }}
+                      className="flex-1 py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                  ) : (
+                    <button className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                      Buy Now
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
