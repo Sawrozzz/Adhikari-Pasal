@@ -23,7 +23,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/user/login");
   };
 
   const toggleMobileMenu = () => {
