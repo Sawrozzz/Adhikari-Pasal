@@ -1,4 +1,5 @@
 import Product from "../model/product-model.js";
+import User from "../model/user-model.js";
 
 //code to create product
 export const create = async (req, res) => {
@@ -63,25 +64,25 @@ export const allProducts = async (req, res) => {
 
 export const searchProducts = async (req, res) => {
   try {
-       const { category } = req.query;
+    const { category } = req.query;
 
-      const query = category
-        ? { category: { $regex: category, $options: "i" } } // Case-insensitive search
-        : {};
+    const query = category
+      ? { category: { $regex: category, $options: "i" } } // Case-insensitive search
+      : {};
 
-      const products = await Product.find(query);
+    const products = await Product.find(query);
 
-         if(!products.length){
-             return res.status(404).json({
-               message: "No products found for the specified category",
-               success: false,
-             });
-         }                        
+    if (!products.length) {
+      return res.status(404).json({
+        message: "No products found for the specified category",
+        success: false,
+      });
+    }
 
     res.status(200).json({
       message: "Products found successfully",
       success: true,
-      data:products,
+      data: products,
     });
   } catch (error) {
     console.error(
@@ -90,6 +91,48 @@ export const searchProducts = async (req, res) => {
     );
     res.status(500).json({
       message: "Server Error",
+      success: false,
+    });
+  }
+};
+
+export const removeProduct = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const productId = req.params.id;
+
+    if (!productId) {
+      return res.status(400).json({
+        message: "Product ID is missing",
+        success: false,
+      });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+        success: false,
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "Login as Admin to delete products",
+        success: false,
+      });
+    }
+    const productList = await Product.findByIdAndDelete(productId);
+    return res.status(200).json({
+      message: "Product removed successfully",
+      success: true,
+      productList: productList,
+    });
+  } catch (error) {
+    console.error("Error while deleting product", error.message);
+    return res.status(500).json({
+      message: "Error while removing product",
       success: false,
     });
   }

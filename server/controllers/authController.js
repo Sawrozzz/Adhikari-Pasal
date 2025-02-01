@@ -153,24 +153,48 @@ export const allUsers = async (req, res) => {
   }
 };
 
-
 //code for getting a single user, basically for loggedIn user, but its not in work for now
-export const profile = async(req, res) =>{
-  try{
-
+export const profile = async (req, res) => {
+  try {
     const userId = req.params.id;
     const user = await User.findById(userId).select("-password");
 
-    if(!user){
-       return res.status(404).json({ message: "User not found", success:false });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
     res.json(user);
-
-  }catch(error){
-     console.log("Error during getting Users", error.message);
+  } catch (error) {
+    console.log("Error during getting Users", error.message);
     res.status(500).json({
-      message:"Error while fetching profile",
-      success:false
-    })
+      message: "Error while fetching profile",
+      success: false,
+    });
   }
-}
+};
+
+export const uploadProfilePicture = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+    user.picture = req.file.path;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Profile picture upload successfull",
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Upload profile image fail",
+      success: false,
+    });
+  }
+};
