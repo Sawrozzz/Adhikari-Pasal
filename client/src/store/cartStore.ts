@@ -81,6 +81,7 @@ const useCartStore = create((set) => ({
       set({ error: error.message, loading: false });
     }
   },
+  
   resetCartNotification: () => {
     set({ cartNotification: 0 }); // ✅ Reset notification count when viewing cart
   },
