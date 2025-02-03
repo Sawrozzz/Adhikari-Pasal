@@ -25,7 +25,7 @@ const useProductStore = create((set) => ({
 
       return response.data;
     } catch (error) {
-      set({ error: error, message, loadind: false });
+      set({ error: error.message, loading: false });
       console.error("Error while creating product", error);
     }
   },
@@ -48,22 +48,27 @@ const useProductStore = create((set) => ({
     }
   },
 
-  searchProducts: async (category) => {
+  searchProducts: async (category:string) => {
     set({ loading: true, error: null });
     try {
       const response = await axios.get(
         `${baseURL}/search?category=${category}`
       );
-      if (!response.data) {
-        throw new Error("Failed to fetch products");
+      if (!response.data||response.data.data.length ===0) {
+        set({
+          searchResults: [],
+          loading: false,
+        });
+           throw new Error("No products found");
       }
-      console.log("Search Results:", response.data);
+      // console.log("Search Results:", response.data);
       set({
         searchResults: response.data.data,
+        loading:false,
       });
     } catch (error) {
-      console.error("Error while searching products:", error);
-      set({ loading: false, error: error, message });
+      console.error("Error while searching products:", error.message);
+      set({ loading: false, error: error.message });
     }
   },
 
