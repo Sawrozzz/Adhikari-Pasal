@@ -7,9 +7,12 @@ const useProductStore = create((set) => ({
   products: [],
   allProducts: [],
   searchResults: [],
+  loading: false,
+  error: null,
 
   createProduct: async (productData) => {
-    
+    set({ loading: true, error: null });
+
     try {
       const response = await axios.post(`${baseURL}/create`, productData, {
         headers: {
@@ -22,12 +25,13 @@ const useProductStore = create((set) => ({
 
       return response.data;
     } catch (error) {
+      set({ error: error.message, loading: false });
       console.error("Error while creating product", error);
-      alert(error.response?.data?.message || "Failed to create product");
     }
   },
 
   fetchAllProducts: async () => {
+    set({ loading: true, error: null });
     try {
       const response = await axios.get(`${baseURL}/all-products`);
 
@@ -39,26 +43,51 @@ const useProductStore = create((set) => ({
         allProducts: response.data.data,
       });
     } catch (error) {
+      set({ loading: false, error: error.message });
       console.error("Error while fetching products:", error);
-      alert(error);
     }
   },
 
-  searchProducts: async (category) => {
+  searchProducts: async (category:string) => {
+    set({ loading: true, error: null });
     try {
       const response = await axios.get(
         `${baseURL}/search?category=${category}`
       );
-      if (!response.data) {
-        throw new Error("Failed to fetch products");
+      if (!response.data||response.data.data.length ===0) {
+        set({
+          searchResults: [],
+          loading: false,
+        });
+           throw new Error("No products found");
       }
-      console.log("Search Results:", response.data); 
+      // console.log("Search Results:", response.data);
       set({
         searchResults: response.data.data,
+        loading:false,
       });
     } catch (error) {
-      console.error("Error while searching products:", error);
-      alert(error.response?.data?.message || "Failed to search products");
+      console.error("Error while searching products:", error.message);
+      set({ loading: false, error: error.message });
+    }
+  },
+
+  removeProduct: async (productId: string, email: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await axios.delete(`${baseURL}/delete/${productId}`, {
+        data: { email },
+      });
+
+      console.log(response.data);
+
+      set((state) => ({
+        products: [...state.products.filter((item) => item._id !== productId)],
+        error: null,
+        loading: false,
+      }));
+    } catch (error) {
+      set({ loading: false, error: error.message });
     }
   },
 }));
