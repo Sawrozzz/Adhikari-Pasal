@@ -26,7 +26,6 @@ const Home = () => {
     }
 
     await addToCart(email, productId, quantity);
-    alert("Product added to cart successfully");
   };
 
   const handleRemoveProduct = async (productId: string) => {
@@ -105,12 +104,12 @@ const Home = () => {
       </div>
 
       {/* Products Section */}
-      <div className="h-1/2 flex-wrap mt-2 ">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="h-1/2 flex-wrap mt-6 ">
+        <div className="flex flex-wrap gap-4 justify-around sm:justify-start sm:px-3 px-1">
           {allProducts.map((product, index) => (
             <div
               key={product.id || index}
-              className="w-72 p-4 bg-white border rounded-lg shadow-md flex-shrink-0"
+              className="w-72 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2 bg-white border rounded-lg shadow-md"
             >
               <div className="relative">
                 <span className="absolute top-2 left-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">

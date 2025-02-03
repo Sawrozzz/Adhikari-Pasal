@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AddProducts = () => {
-  const { createProduct } = useProductStore();
+  const { createProduct,loading, error } = useProductStore();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -37,7 +37,6 @@ const AddProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("clicked");
 
     const productData = new FormData();
     productData.append("name", formData.name);
@@ -140,13 +139,12 @@ const AddProducts = () => {
             </div>
           )}
         </div>
-
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-1 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
-        >
-          Add Product
-        </button>
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-1 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
+          >
+            {loading ? "Adding Product.....":"Add Product"}
+          </button>
       </form>
     </div>
   );

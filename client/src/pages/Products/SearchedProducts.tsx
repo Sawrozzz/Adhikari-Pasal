@@ -4,17 +4,18 @@ import useProductStore from "../../store/productStore";
 
 const SearchedProducts = () => {
   const { searchResults, searchProducts } = useProductStore();
-const location = useLocation();
- const getQueryParam = (param) => {
-   const urlParams = new URLSearchParams(location.search);
-   return urlParams.get(param); // Get the 'category' query parameter
- };
+  const location = useLocation();
 
- const category = getQueryParam("category");
+  const getQueryParam = (param) => {
+    const urlParams = new URLSearchParams(location.search);
+    return urlParams.get(param); // Get the 'category' query parameter
+  };
+
+  const category = getQueryParam("category");
 
   useEffect(() => {
     console.log(category);
-    
+
     if (category) {
       searchProducts(category);
     }
@@ -26,11 +27,11 @@ const location = useLocation();
         Search Results for "{category}"
       </h2>
       {searchResults && searchResults.length === 0 ? (
-        <p>No products found</p>
+        <p>No products found for "{category}". This item is not available.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {searchResults.map((product) => (
-            <div className=" overflow-x-auto mt-2" key={product.id}>
+            <div className="overflow-x-auto mt-2" key={product.id}>
               <div className="flex gap-4 px-5">
                 <div className="w-72 p-4 bg-white border rounded-lg shadow-md flex-shrink-0">
                   <div className="relative">
@@ -49,7 +50,6 @@ const location = useLocation();
                     </h3>
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-lg font-bold text-gray-900">
-                        {" "}
                         Rs {product.discountedPrice}
                       </span>
                     </div>
@@ -57,10 +57,12 @@ const location = useLocation();
                       <p className="text-sm text-gray-700 line-through">
                         Rs {product.price}
                       </p>
-                      <p className="text-xs text-gray-900">{product.discount}%</p>
+                      <p className="text-xs text-gray-900">
+                        {product.discount}%
+                      </p>
                     </div>
                     <p className="text-sm text-gray-500 mt-1">
-                     {product.description}
+                      {product.description}
                     </p>
                     <div className="mt-4 flex gap-2">
                       <button className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100">
