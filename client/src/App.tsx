@@ -10,7 +10,6 @@ import AddProducts from "./pages/Products/AddProducts";
 import SearchedProducts from "./pages/Products/SearchedProducts";
 import Dashboard from "./pages/AdminDashboard/Dashboard";
 import Cart from "./pages/Cart/Cart";
-
 function App() {
   return (
     <BrowserRouter>
