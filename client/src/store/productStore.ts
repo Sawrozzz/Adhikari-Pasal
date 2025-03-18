@@ -75,18 +75,23 @@ const useProductStore = create((set) => ({
   removeProduct: async (productId: string, email: string) => {
     set({ loading: true, error: null });
     try {
+      console.log(`Attempting to delete product with ID: ${productId}`);
       const response = await axios.delete(`${baseURL}/delete/${productId}`, {
         data: { email },
       });
 
-      console.log(response.data);
-
-      set((state) => ({
-        products: [...state.products.filter((item) => item._id !== productId)],
-        error: null,
-        loading: false,
-      }));
+      set((state) => {
+        const updatedProducts = [...state.allProducts.filter(
+          (item) => item._id !== productId
+        )];
+        return {
+          products: updatedProducts,
+          error: null,
+          loading: false,
+        };
+      });
     } catch (error) {
+      console.error("Error deleting product:", error);
       set({ loading: false, error: error.message });
     }
   },
