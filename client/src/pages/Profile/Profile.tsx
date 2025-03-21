@@ -3,6 +3,9 @@ import useAuthStore from "../../store/authStore";
 
 const Profile = () => {
   const { user, userProfile } = useAuthStore();
+  console.log(user);
+  
+  
   const [profileImage, setProfileImage] = useState(
     user.profileImage ||
       "https://imgs.search.brave.com/NFQhQXcC4U0ieD6JYNE3pwmlcIR9C_JRBXVKjBU54qg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzkzLzU0/L2NmLzkzNTRjZjI4/MmYxMDNhOTBmZWIx/MGNhMzc1Mjg5ZWNh/LmpwZw"

@@ -95,7 +95,7 @@ const AddProducts = () => {
           />
         </div>
         <div>
-          <label className="block font-medium mb-2">Discount</label>
+          <label className="block font-medium mb-2">Discount(%)</label>
           <input
             type="number"
             name="discount"

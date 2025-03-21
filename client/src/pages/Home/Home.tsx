@@ -163,10 +163,10 @@ const Home = () => {
 
                 <div className="mt-1 flex items-center">
                   <p className="text-sm text-gray-500 line-through mr-2">
-                    Rs{product.price}
+                    Rs.{product.price.toFixed()}
                   </p>
                   <p className="text-lg font-bold text-gray-900">
-                    RS{product.discountedPrice}
+                    RS.{product.discountedPrice.toFixed()}
                   </p>
                 </div>
 
