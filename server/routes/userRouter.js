@@ -1,7 +1,8 @@
 import express from "express";
 const router = express.Router();
 import {uploadProfileImage} from '../middleware/multer.js'
-import { allUsers, login, logout, profile, register, uploadProfilePicture } from "../controllers/authController.js";
+import { all, allUsers, login, logout, profile, register, uploadProfilePicture } from "../controllers/authController.js";
+import { isloggedIn } from "../middleware/isLoggedIn.js";
 
 router.get("/",(req, res)=>{
 res.send("Working fine on user route")
@@ -18,10 +19,13 @@ router.get("/profile/:id", profile)
 router.post(
   "/profile/upload",
   uploadProfileImage.single("profileImage"),
+  isloggedIn,
   uploadProfilePicture
 );
 
 router.get("/allUsers",allUsers)
+
+router.get('/all',all)
 
 
 
