@@ -1,3 +1,5 @@
+THESE ARE THE REQUIREMENTS THAT I NEED TO ADD THROUGHOUT THE PROJECT TIME. WELL MORE FEATURES ARE GOING TO BE ADDED. 
+
 New features to be added:
 //Basic features need to implement
 1. Delete and update(if needed not now though) of individual products.✅
