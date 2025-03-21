@@ -92,7 +92,7 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );
-    res.cookie("token", token);
+ res.setHeader("Authorization", `Bearer ${token}`);
     res.status(200).json({
       message: "Login successful",
       success: true,
@@ -115,7 +115,6 @@ export const login = async (req, res) => {
 //code for logout user
 export const logout = (req, res) => {
   try {
-    res.clearCookie("token");
     return res.status(200).json({
       message: "Logout successful",
       success: true,
@@ -186,7 +185,7 @@ export const all = async (req, res) => {
 export const profile = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId).select("-password").select("-cart");
    
 
     if (!user) {
@@ -207,36 +206,41 @@ export const profile = async (req, res) => {
 export const uploadProfilePicture = async (req, res) => {
   try {
     const userId = req.user.userId;
-    console.log(req.user);
-    console.log("Clicked");
 
+    // console.log(userId);
+
+    // Find the user by ID
     const user = await User.findById(userId);
-    console.log(user);
-    // console.log("Ckicked algain");
     if (!user) {
       return res.status(404).json({
         message: "User not found",
         success: false,
       });
     }
-    
+
+    // Check if a file is uploaded
     if (!req.file || !req.file.path) {
       return res.status(400).json({
         message: "No file uploaded",
         success: false,
       });
     }
+
+    // Update the user's profile picture path
     user.picture = req.file.path;
     await user.save();
 
     return res.status(200).json({
-      message: "Profile picture upload successfull",
+      message: "Profile picture upload successful",
       success: true,
+      picture: user.picture, // Optionally include the new picture path in the response
     });
   } catch (error) {
+    console.error("Error uploading profile picture:", error);
     return res.status(500).json({
-      message: "Upload profile image fail",
+      message: "Upload profile image failed",
       success: false,
+      error: error.message, // Optionally include the error message in the response
     });
   }
 };
