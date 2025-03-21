@@ -3,41 +3,48 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AddProducts = () => {
-  const { createProduct,loading, error } = useProductStore();
+  const { createProduct, loading, error } = useProductStore();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    category:"",
+    category: "",
     price: "",
     discount: "",
     description: "",
     image: null,
   });
-
-  const fileInputRef = useRef(null); // Create a reference for the file input
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    if (files) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: files[0],
+      }));
+      setImagePreview(URL.createObjectURL(files[0]));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleClearImage = () => {
     setFormData((prev) => ({
       ...prev,
-      image: null, // Clear the image from formData
+      image: null,
     }));
+    setImagePreview(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Reset the file input using the ref
+      fileInputRef.current.value = "";
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const productData = new FormData();
     productData.append("name", formData.name);
     productData.append("category", formData.category);
@@ -53,98 +60,109 @@ const AddProducts = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto my-8 p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold text-center mb-4">Add Product</h2>
+    <div className="max-w-lg mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-3xl font-bold text-center mb-6 text-indigo-600">
+        Add Product
+      </h2>
       <form
-        className="space-y-4"
+        className="space-y-6"
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
         <div>
-          <label className="block font-medium mb-2">Product Name</label>
+          <label className="block font-medium mb-2 text-gray-700">
+            Product Name
+          </label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div>
-          <label className="block font-medium mb-2">Product Category</label>
+          <label className="block font-medium mb-2 text-gray-700">
+            Product Category
+          </label>
           <input
             type="text"
             name="category"
             value={formData.category}
             onChange={handleChange}
             required
-            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
-
         <div>
-          <label className="block font-medium mb-2">Price</label>
+          <label className="block font-medium mb-2 text-gray-700">Price</label>
           <input
             type="number"
             name="price"
             value={formData.price}
             onChange={handleChange}
             required
-            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div>
-          <label className="block font-medium mb-2">Discount(%)</label>
+          <label className="block font-medium mb-2 text-gray-700">
+            Discount (%)
+          </label>
           <input
             type="number"
             name="discount"
             value={formData.discount}
             onChange={handleChange}
-            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
-
         <div>
-          <label className="block font-medium mb-2">Description</label>
+          <label className="block font-medium mb-2 text-gray-700">
+            Description
+          </label>
           <textarea
             name="description"
             required
             value={formData.description}
             onChange={handleChange}
-            rows="3"
-            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            rows="4"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           ></textarea>
         </div>
-
         <div>
-          <label className="block font-medium mb-2">Image</label>
+          <label className="block font-medium mb-2 text-gray-700">Image</label>
           <input
             type="file"
             name="image"
-            ref={fileInputRef} // Attach ref to the file input
+            ref={fileInputRef}
             onChange={handleChange}
-            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          {formData.image && (
-            <div className="mt-2">
-              <p>Selected file: {formData.image.name}</p>
+          {imagePreview && (
+            <div className="mt-4">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-48 object-cover rounded-lg"
+              />
               <button
                 type="button"
                 onClick={handleClearImage}
-                className="mt-2 text-white bg-red-600 py-1 px-1 rounded-md "
+                className="mt-2 text-white bg-red-600 py-2 px-4 rounded-lg hover:bg-red-700"
               >
                 Remove Image
               </button>
             </div>
           )}
         </div>
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-1 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-200"
-          >
-            {loading ? "Adding Product.....":"Add Product"}
-          </button>
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          {loading ? "Adding Product..." : "Add Product"}
+        </button>
       </form>
     </div>
   );

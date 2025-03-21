@@ -99,10 +99,10 @@ const Cart = () => {
 
                 <div className="mt-1 flex items-center">
                   <p className="text-sm text-gray-500 line-through mr-2">
-                    Rs{item.price}
+                    Rs.{item.price}
                   </p>
                   <p className="text-lg font-bold text-gray-900">
-                    RS{item.discountedPrice}
+                    RS.{item.discountedPrice}
                   </p>
                 </div>
 
@@ -153,7 +153,7 @@ const Cart = () => {
         <div className="flex mt-5 mb-7">
           <h3 className="w-2/4 text-2xl">Total Amount to be Paid:</h3>
           <h3 className="font-semibold text-2xl text-green-700">
-            Rs {cart.reduce((total, item) => total + item.discountedPrice, 0)}
+            Rs.{cart.reduce((total, item) => total + item.discountedPrice, 0)}
           </h3>
         </div>
         <h3 className="border w-full sm:w-1/3 h-10 bg-green-500 flex justify-center items-center rounded hover:bg-green-600 cursor-pointer">

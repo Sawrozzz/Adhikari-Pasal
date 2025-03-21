@@ -1,18 +1,25 @@
 import jwt from "jsonwebtoken";
 
 export const isloggedIn = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  // console.log(authHeader)
+  if (!authHeader) {
+    return res.status(401).json({
+      message: "Access denied. Please log in first.",
+      success: false,
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({
+      message: "Access denied. Please log in first.",
+      success: false,
+    });
+  }
+
   try {
-    // console.log("Headers",req.headers);
-    const token = req.headers.cookie?.split("token=")[1];
-    // console.log("token", token);
-    if (!token) {
-      return res.status(401).json({
-        message: "Access denied. Login Fist",
-        success: false,
-      });
-    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log("User after decode", decoded);
     req.user = decoded;
     next();
   } catch (error) {

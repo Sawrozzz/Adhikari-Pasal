@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import axios from "axios";
+import { decodeToken } from "../utils/tokenDecoded";
 
 const baseURL = "http://localhost:5000/users";
+
 
 const useAuthStore = create((set) => ({
   user: JSON.parse(localStorage.getItem("user") || "null"),
@@ -9,36 +11,77 @@ const useAuthStore = create((set) => ({
   // isLoggedIn: localStorage.getItem("token") ? true : false,
   isLoggedIn: !!localStorage.getItem("token"),
   allUsers: [],
+  profileData:null,
+  loading:false,
+  error:null,
 
-   userProfile: async () => {
+  fetchUserProfile: async () => {
     const user = JSON.parse(localStorage.getItem("user") || "null");
     const token = localStorage.getItem("token");
 
+    const userDetails = decodeToken(token);
+    const userId = userDetails?.userId;
+
+    
+
     if (!user || !token) {
       console.error("User is not logged in.");
-      
       return;
     }
 
-    // try {
-    //   const response = await axios.get(`${baseURL}/profile/${user._id}`, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   });
-    //   console.log("respinse",response);
-      
+    try {
+      const response = await axios.get(`${baseURL}/profile/${userId}`)
+      set({profileData:response.data})
 
-    //   if (response.status === 200) {
-    //     console.log("Profile fetched successfully:", response.data);
-    //     set({ user: response.data }); // Update Zustand store with fetched user profile
-    //   } else {
-    //     throw new Error("Failed to fetch user profile.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error while fetching user profile:", error);
-    //   alert("Failed to fetch user profile.");
-    // }
+    } catch (error) {
+      console.error("Error while fetching profile", error.message);
+    }
+  },
+
+  uploadProfilePicture: async(file) =>{
+   const token = localStorage.getItem("token");
+   
+    if(!token){
+      console.error("User is not logged In");
+      return;
+    }
+     const userDetails = decodeToken(token);
+     const userId = userDetails?.userId;
+     
+       if (!userId) {
+         console.error("Invalid token.");
+         return;
+       }
+
+    const formData = new FormData();
+    
+    formData.append("profileImage", file)
+    
+    set({loading:true,error:null})
+
+    try{
+      const response = await axios.post(`${baseURL}/profile/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
+       set((state) => ({
+         profileData: {
+           ...state.profileData,
+           profileImage: response.data.profileImage,
+         },
+         loading: false,
+       }));
+       return response.data;
+
+    }catch(error){
+      console.error("Error occur while uploading profile",error.message)
+
+       set({ loading: false, error: error.message });
+    }
+   
+
   },
 
   signup: async (userData) => {
@@ -73,6 +116,7 @@ const useAuthStore = create((set) => ({
       localStorage.setItem("user", JSON.stringify(loggedInUserData));
     } catch (error) {
       console.error("Error occured while login:", error);
+      set({error:error.message, loading:false})
       alert(error);
     }
   },

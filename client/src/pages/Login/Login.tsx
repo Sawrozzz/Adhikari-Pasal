@@ -2,29 +2,26 @@ import { useState } from "react";
 import useAuthStore from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
-
   const navigate = useNavigate();
 
-   const { login } = useAuthStore();
+  const { login } = useAuthStore();
 
-   
-    const [formData, setFormData] = useState({
-      email: "",
-      password: "",
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
-
-      const handleChange = (e) => {
-        
-          setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-          });
-        };
-     const handleLogin = (e) => {
-       e.preventDefault();
-       login(formData);
-       navigate('/');
-     };
+  };
+  const handleLogin = (e) => {
+    e.preventDefault();
+    login(formData);
+    navigate("/");
+  };
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Left Section with Image */}
