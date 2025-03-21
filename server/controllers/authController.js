@@ -49,7 +49,7 @@ export const register = async (req, res) => {
 
     const token = jwt.sign(
       { userId: newUser._id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRECT,
+      process.env.JWT_SECRET,
       {
         expiresIn: "3h",
       }
@@ -89,7 +89,7 @@ export const login = async (req, res) => {
     }
     const token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRECT,
+      process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );
     res.cookie("token", token);
@@ -101,11 +101,11 @@ export const login = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
+        picture:user.picture,
       },
     });
   } catch (error) {
-    console.log("Error while login", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error",
       success: false,
     });
@@ -116,13 +116,12 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   try {
     res.clearCookie("token");
-    res.status(200).json({
+    return res.status(200).json({
       message: "Logout successful",
       success: true,
     });
   } catch (error) {
-    console.log("Error during logout", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error",
       success: false,
     });
@@ -139,10 +138,40 @@ export const allUsers = async (req, res) => {
         success: false,
       });
     }
+    const userCount = users.length;
+
     res.status(200).json({
       message: "Users retrieved successfully",
       success: true,
       data: users, // Send the users data in the response
+      userCount: userCount,
+    });
+  } catch (error) {
+    console.log("Error during getting Users", error.message);
+    res.status(500).json({
+      message: "Server Error",
+      success: false,
+    });
+  }
+};
+
+//code for all users
+export const all = async (req, res) => {
+  try {
+    const users = await User.find(); // $ne means "not equal"
+    if (!users.length) {
+      return res.status(404).json({
+        message: "No users found",
+        success: false,
+      });
+    }
+    const userCount = users.length;
+
+    res.status(200).json({
+      message: "Users retrieved successfully",
+      success: true,
+      data: users, // Send the users data in the response
+      userCount: userCount,
     });
   } catch (error) {
     console.log("Error during getting Users", error.message);
@@ -158,13 +187,14 @@ export const profile = async (req, res) => {
   try {
     const userId = req.params.id;
     const user = await User.findById(userId).select("-password");
+   
 
     if (!user) {
       return res
         .status(404)
         .json({ message: "User not found", success: false });
     }
-    res.json(user);
+    return res.json(user);
   } catch (error) {
     console.log("Error during getting Users", error.message);
     res.status(500).json({
@@ -176,11 +206,23 @@ export const profile = async (req, res) => {
 
 export const uploadProfilePicture = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const userId = req.user.userId;
+    console.log(req.user);
+    console.log("Clicked");
+
+    const user = await User.findById(userId);
     console.log(user);
+    // console.log("Ckicked algain");
     if (!user) {
       return res.status(404).json({
         message: "User not found",
+        success: false,
+      });
+    }
+    
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({
+        message: "No file uploaded",
         success: false,
       });
     }
