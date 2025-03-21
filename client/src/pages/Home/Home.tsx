@@ -34,7 +34,7 @@ const Home = () => {
   const handleOnAddToCart = async (productId: string, quantity = 1) => {
     
     if (!isLoggedIn || !user || !user.email) {
-      alert("You must sign up and log in to your account to add products.");
+      toast.error("You must sign up and log in to your account to add products.");
       navigate("/user/login");
       return;
     }
