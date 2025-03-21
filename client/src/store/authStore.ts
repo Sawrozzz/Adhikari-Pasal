@@ -21,11 +21,13 @@ const useAuthStore = create((set) => ({
     }
 
     // try {
-    //   const response = await axios.get(`${baseURL}/profile/${user.id}`, {
+    //   const response = await axios.get(`${baseURL}/profile/${user._id}`, {
     //     headers: {
     //       Authorization: `Bearer ${token}`,
     //     },
     //   });
+    //   console.log("respinse",response);
+      
 
     //   if (response.status === 200) {
     //     console.log("Profile fetched successfully:", response.data);

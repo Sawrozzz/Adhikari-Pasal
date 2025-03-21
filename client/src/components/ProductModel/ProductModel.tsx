@@ -20,7 +20,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
         <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
         <p className="text-gray-700 mb-4">{product.description}</p>
         <p className="text-lg font-semibold text-indigo-600">
-          ${product.price}
+          Rs.{product.discountedPrice.toFixed()}
         </p>
       </div>
     </div>
