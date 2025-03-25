@@ -54,10 +54,11 @@ export const register = async (req, res) => {
         expiresIn: "3h",
       }
     );
+    const filterdUser = await User.find({ email }).select("-password");
     res.status(201).json({
       message: "User registered successfully",
       success: true,
-      userData: newUser,
+      userData: filterdUser,
       token,
     });
   } catch (error) {
@@ -92,7 +93,7 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );
- res.setHeader("Authorization", `Bearer ${token}`);
+    res.setHeader("Authorization", `Bearer ${token}`);
     res.status(200).json({
       message: "Login successful",
       success: true,
@@ -101,7 +102,7 @@ export const login = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
-        picture:user.picture,
+        picture: user.picture,
       },
     });
   } catch (error) {
@@ -154,6 +155,39 @@ export const allUsers = async (req, res) => {
   }
 };
 
+export const deleteUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const isThereAnyUsers = await User.find();
+    if (isThereAnyUsers.length === 0) {
+      return res.status(401).json({
+        message: "There is no user to delete, create one first",
+        success: false,
+      });
+    }
+
+    const deleteUser = await User.findOneAndDelete({ email });
+    if (!deleteUser) {
+      return res.status(401).json({
+        message: "There is no user with the provided email",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "User deleted successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error occurs", error.message);
+    return res.status(500).json({
+      message: "Error occurred while deleting user",
+      success: false,
+    });
+  }
+};
+
 //code for all users
 export const all = async (req, res) => {
   try {
@@ -185,8 +219,9 @@ export const all = async (req, res) => {
 export const profile = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).select("-password").select("-cart");
-   
+    const user = await User.findById(userId)
+      .select("-password")
+      .select("-cart");
 
     if (!user) {
       return res
