@@ -10,13 +10,14 @@ import AddProducts from "./pages/Products/AddProducts";
 import SearchedProducts from "./pages/Products/SearchedProducts";
 import Dashboard from "./pages/AdminDashboard/Dashboard";
 import Cart from "./pages/Cart/Cart";
+import Cart2 from "./pages/Cart2/Cart2";
 function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<Cart2 />} />
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/user/all-users" element={<AllUsers />} />

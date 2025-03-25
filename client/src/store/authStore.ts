@@ -85,7 +85,7 @@ const useAuthStore = create((set) => ({
   },
 
   signup: async (userData) => {
-    console.log("clicked again");
+    // console.log("clicked again");
 
     try {
       const response = await axios.post(`${baseURL}/register`, userData);

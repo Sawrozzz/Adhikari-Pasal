@@ -2,11 +2,13 @@ import mongoose from "mongoose";
 
 const purchasedItemSchema = new mongoose.Schema(
   {
-    item: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "cartItem",
-      required: true,
-    },
+       items: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "cartItem",
+        required: true,
+      },
+    ],
     totalPrice: { type: Number, required: true },
     purchaseDate: { type: Date, default: Date.now },
     paymentMethod: { type: String, enum: ["khalti"], required: true },
