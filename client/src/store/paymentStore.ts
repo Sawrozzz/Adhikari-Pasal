@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 
 const baseURL = "http://localhost:5000/payment";
+const website_url = "http://localhost:5000";
 
 export interface PaymentData {
   orders: [];
@@ -9,7 +10,7 @@ export interface PaymentData {
   error: string | null;
   initializePayment: (
     amount: number,
-    itemId: string,
+    itemIds: string[],
     website_url: string
   ) => Promise<void>;
   verifyKhaltiPayment: (pidx: string) => Promise<void>;
@@ -21,18 +22,23 @@ const usePaymentStore = create((set) => ({
   error: null,
 
   initializePayment: async (
-    amount: number,
-    itemId: string,
+    itemIds: string[],
     website_url: string
   ) => {
     set({ loading: true, error: null });
+    console.log("clicked");
+    
     try {
       const response = await axios.post(`${baseURL}/initialize-khalti`, {
-        amount,
-        itemId,
-        website_url,
+        itemIds,
+        website_url: `${website_url}`,
       });
+      console.log("clicked");
+      
       console.log(response.data);
+      const paymentUrl = response.data.payment.payment_url;
+
+      window.location.href = paymentUrl;
 
       set({
         orders: [response.data.purchasedItemData],
