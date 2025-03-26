@@ -9,7 +9,9 @@ import { cartItem } from "../model/cart-model.js";
 
 export const initializeKhalti = async (req, res) => {
   try {
+    // console.log("Request body",req.body);
     const { itemIds, website_url } = req.body;
+
 
     if (!Array.isArray(itemIds) || itemIds.length === 0) {
       return res.status(400).json({
@@ -56,6 +58,7 @@ export const initializeKhalti = async (req, res) => {
     });
 
 
+
     const purchaseOrderName = productNames.join(" and ");
 
     // console.log("Purchase order name", purchaseOrderName);
@@ -68,11 +71,14 @@ export const initializeKhalti = async (req, res) => {
       website_url,
     });
 
+    // console.log(paymentInitiate.payment_url);
+
     res.status(200).json({
       success: true,
       purchasedItemData,
       purchaseOrderName,
       payment: paymentInitiate,
+      // return_url:paymentInitiate.payment_url,
     });
   } catch (error) {
     console.error("Error while initializing Khalti payment", error);
@@ -86,28 +92,19 @@ export const verifyPayment = async (req, res) => {
   const { pidx, amount, purchase_order_id, transaction_id } = req.query;
 
   // Log the incoming request parameters
-  console.log("Received request parameters:", req.query);
+  // console.log("Received request parameters:", req.query);
 
   try {
     const paymentInfo = await verifyKhaltiPayment(pidx);
-    console.log("clicked");
-    console.log("payment amount", paymentInfo.total_amount);
+    // console.log("clicked");
+    // console.log("payment amount", paymentInfo.total_amount);
 
     // If payment is successful, then check the record if matched
     if (paymentInfo?.status !== "Completed") {
-      console.log("Payment status is not completed:", paymentInfo?.status);
+      // console.log("Payment status is not completed:", paymentInfo?.status);
       return res.status(400).json({
         success: false,
         message: "Incomplete information: Payment status is not completed",
-        paymentInfo,
-      });
-    }
-
-    if (Number(paymentInfo.total_amount) !== Number(amount)) {
-      console.log("Amount does not match:", paymentInfo.total_amount, amount);
-      return res.status(400).json({
-        success: false,
-        message: "Incomplete information: Amount does not match",
         paymentInfo,
       });
     }
@@ -148,7 +145,7 @@ export const verifyPayment = async (req, res) => {
         status: "completed",
       },
     });
-    console.log("completed");
+    // console.log("completed");
 
     // Create a new payment record
     const paymentData = await Payment.create({
