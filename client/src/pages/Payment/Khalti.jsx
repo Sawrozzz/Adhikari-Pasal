@@ -16,9 +16,7 @@ const Khalti = () => {
         const handleVerifyPayment = async () => {
           await verifyKhaltiPayment(pidx);
         };
-  return (
-    <div>Khalti</div>
-  )
+  return;
 }
 
-export default Khalti
+export default Khalti;
