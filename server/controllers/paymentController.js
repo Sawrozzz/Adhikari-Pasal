@@ -6,19 +6,19 @@ import Payment from "../model/payment-model.js";
 import PurchasedItem from "../model/purchased-item-model.js";
 // import Product from "../model/product-model.js"
 import { cartItem } from "../model/cart-model.js";
+import axios from "axios";
 
 export const initializeKhalti = async (req, res) => {
   try {
     // console.log("Request body",req.body);
     const { itemIds, website_url } = req.body;
 
-
     if (!Array.isArray(itemIds) || itemIds.length === 0) {
       return res.status(400).json({
         success: false,
         message: "itemIds must be a non-empty array",
       });
-    } 
+    }
 
     let totalPrice = 0;
     const purchasedItemsData = [];
@@ -54,10 +54,8 @@ export const initializeKhalti = async (req, res) => {
     const purchasedItemData = await PurchasedItem.create({
       items: itemIds,
       paymentMethod: "khalti",
-      totalPrice: totalPrice *100,
+      totalPrice: totalPrice * 100,
     });
-
-
 
     const purchaseOrderName = productNames.join(" and ");
 
@@ -67,7 +65,7 @@ export const initializeKhalti = async (req, res) => {
       amount: totalPrice * 100, // amount should be in paisa (Rs * 100)
       purchase_order_id: purchasedItemData._id, // use the _id of the created PurchasedItem
       purchase_order_name: `${purchaseOrderName} order`,
-      return_url: `${process.env.BACKEND_URI}/payment/complete-khalti-payment`, // it can be even managed from frontend
+      return_url: "http://localhost:5173/payment-success", // it can be even managed from frontend
       website_url,
     });
 
@@ -88,6 +86,7 @@ export const initializeKhalti = async (req, res) => {
     });
   }
 };
+
 export const verifyPayment = async (req, res) => {
   const { pidx, amount, purchase_order_id, transaction_id } = req.query;
 
@@ -129,15 +128,15 @@ export const verifyPayment = async (req, res) => {
     }
 
     // Check for duplicate transactionId
-    const existingPayment = await Payment.findOne({
-      transactionId: transaction_id,
-    });
-    if (existingPayment) {
-      return res.status(400).json({
-        success: false,
-        message: "Duplicate transaction ID",
-      });
-    }
+    // const existingPayment = await Payment.findOne({
+    //   transactionId: transaction_id,
+    // });
+    // if (existingPayment) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Duplicate transaction ID",
+    //   });
+    // }
 
     // Updating purchase record
     await PurchasedItem.findByIdAndUpdate(purchase_order_id, {
@@ -160,11 +159,12 @@ export const verifyPayment = async (req, res) => {
     });
 
     // Send success response
-    res.json({
-      success: true,
-      message: "Payment Successful with Khalti, Thank You",
-      paymentData,
-    });
+    // window.location.href = "http://localhost:5173";
+    // res.json({
+    //   success: true,
+    //   message: "Payment Successful with Khalti, Thank You",
+    //   paymentData,
+    // });
   } catch (error) {
     console.error("Error while verifying payment", error.message);
     res.status(500).json({
@@ -173,3 +173,33 @@ export const verifyPayment = async (req, res) => {
     });
   }
 };
+
+// export const handleKhaltiCallBack = async (req, res, next) => {
+//   try {
+//     const { txnId, pidx, amount, purchase_order_id, transaction_id, message } =
+//       req.query;
+//       // console.log("cliked");
+//     if (message) {
+//       return res
+//         .status(400)
+//         .json({ error: message || "Error Processing Khalti" });
+//     }
+//     // console.log("Clieked");
+
+//     const headers = {
+//       Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
+//       "Content-Type":"application/json",
+//     };
+//     // console.log("clicke");
+//     const response = await axios.post(`${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/lookup`,{pidx},{headers});
+//     console.log(response.data);
+//      if (response.data.status !== "Completed") {
+//        return res.status(400).json({ error: "Payment not completed" });
+//      }
+//     req.transactionId = purchase_order_id;
+//     req.transaction_code = pidx;
+//     next();
+//   } catch (error) {
+//     console.error("Error while call back khalti", error.message);
+//   }
+// };
