@@ -3,7 +3,7 @@ import { initializeKhalti, verifyPayment } from '../controllers/paymentControlle
 
 const router = express.Router();
 
-router.post("/initialize-khalti",initializeKhalti);
+router.post("/initialize-khalti", initializeKhalti);
 
 router.get("/complete-khalti-payment", verifyPayment);
 
