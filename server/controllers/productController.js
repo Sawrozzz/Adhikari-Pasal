@@ -48,10 +48,12 @@ export const allProducts = async (req, res) => {
     //     success:false,
     //   });
     // }
+    const productLength = products.length;
     res.status(200).json({
       message: "Products retrieved successfully",
       success: true,
       data: products,
+      productLength:productLength,
     });
   } catch (error) {
     console.log("Error during getting all products", error.message);

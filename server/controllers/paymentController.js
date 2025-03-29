@@ -4,9 +4,9 @@ import {
 } from "../config/khalti.js";
 import Payment from "../model/payment-model.js";
 import PurchasedItem from "../model/purchased-item-model.js";
-// import Product from "../model/product-model.js"
 import { cartItem } from "../model/cart-model.js";
-import axios from "axios";
+import { Order } from "../model/order-model.js";
+import User from "../model/user-model.js"
 
 export const initializeKhalti = async (req, res) => {
   try {
@@ -19,6 +19,17 @@ export const initializeKhalti = async (req, res) => {
         message: "itemIds must be a non-empty array",
       });
     }
+        const userId = req.user.userId;
+        const user = await User.findById(userId).select("-password").select("-orders");
+        // console.log(user);
+        if (!user) {
+          return res.status(400).send({
+            success: false,
+            message: "User data not found",
+          });
+        }
+  
+ 
 
     let totalPrice = 0;
     const purchasedItemsData = [];
@@ -30,7 +41,6 @@ export const initializeKhalti = async (req, res) => {
           _id: itemId,
         })
         .populate("product");
-
       if (!itemData) {
         console.error(`Item with ID ${itemId} not found`);
         continue; // Skip this item and continue with the next one
@@ -57,7 +67,10 @@ export const initializeKhalti = async (req, res) => {
       totalPrice: totalPrice * 100,
     });
 
+
     const purchaseOrderName = productNames.join(" and ");
+
+    // const purchasedDataWithUser = purchasedItemData.populate('items')
 
     // console.log("Purchase order name", purchaseOrderName);
 
@@ -65,17 +78,38 @@ export const initializeKhalti = async (req, res) => {
       amount: totalPrice * 100, // amount should be in paisa (Rs * 100)
       purchase_order_id: purchasedItemData._id, // use the _id of the created PurchasedItem
       purchase_order_name: `${purchaseOrderName} order`,
-      return_url: "http://localhost:5173/payment-success", // it can be even managed from frontend
+      return_url: `${process.env.BACKEND_URI}/payment/complete-khalti-payment`, // it can be even managed from frontend
       website_url,
     });
+
+    const order = await Order.create({
+      user: userId,
+      userName:user.fullName,
+      payment_method: "khalti",
+      order_data:purchasedItemData._id,
+      status:"created",
+      address: user.address,
+    });
+    console.log("Order is",order);
+
+    await User.findByIdAndUpdate(
+      userId,{
+        $push:{orders:order._id}
+      },{
+        new:true
+      }
+    );
 
     // console.log(paymentInitiate.payment_url);
 
     res.status(200).json({
+      // user:user,
       success: true,
       purchasedItemData,
       purchaseOrderName,
       payment: paymentInitiate,
+      order:order,
+
       // return_url:paymentInitiate.payment_url,
     });
   } catch (error) {
@@ -90,23 +124,20 @@ export const initializeKhalti = async (req, res) => {
 export const verifyPayment = async (req, res) => {
   const { pidx, amount, purchase_order_id, transaction_id } = req.query;
 
-  // Log the incoming request parameters
-  // console.log("Received request parameters:", req.query);
-
   try {
     const paymentInfo = await verifyKhaltiPayment(pidx);
-    // console.log("clicked");
-    // console.log("payment amount", paymentInfo.total_amount);
 
     // If payment is successful, then check the record if matched
     if (paymentInfo?.status !== "Completed") {
-      // console.log("Payment status is not completed:", paymentInfo?.status);
       return res.status(400).json({
         success: false,
         message: "Incomplete information: Payment status is not completed",
         paymentInfo,
       });
     }
+
+
+
 
     // Check if payment is done in valid cart(item)
     console.log(
@@ -144,7 +175,6 @@ export const verifyPayment = async (req, res) => {
         status: "completed",
       },
     });
-    // console.log("completed");
 
     // Create a new payment record
     const paymentData = await Payment.create({
@@ -157,6 +187,18 @@ export const verifyPayment = async (req, res) => {
       paymentGateway: "khalti",
       status: "success",
     });
+
+
+    console.log("Payment data",paymentData);
+    // const createOrder = await Order.create({
+       
+    // })
+
+ const redirectUrl = "http://localhost:5173/payment-success";
+
+ return res.redirect(redirectUrl);
+
+
 
     // Send success response
     // window.location.href = "http://localhost:5173";
@@ -173,33 +215,3 @@ export const verifyPayment = async (req, res) => {
     });
   }
 };
-
-// export const handleKhaltiCallBack = async (req, res, next) => {
-//   try {
-//     const { txnId, pidx, amount, purchase_order_id, transaction_id, message } =
-//       req.query;
-//       // console.log("cliked");
-//     if (message) {
-//       return res
-//         .status(400)
-//         .json({ error: message || "Error Processing Khalti" });
-//     }
-//     // console.log("Clieked");
-
-//     const headers = {
-//       Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
-//       "Content-Type":"application/json",
-//     };
-//     // console.log("clicke");
-//     const response = await axios.post(`${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/lookup`,{pidx},{headers});
-//     console.log(response.data);
-//      if (response.data.status !== "Completed") {
-//        return res.status(400).json({ error: "Payment not completed" });
-//      }
-//     req.transactionId = purchase_order_id;
-//     req.transaction_code = pidx;
-//     next();
-//   } catch (error) {
-//     console.error("Error while call back khalti", error.message);
-//   }
-// };
