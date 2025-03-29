@@ -72,12 +72,22 @@ const Home = () => {
     toast.error("Product deleted successfully")
   };
 
+   useEffect(() => {
+     const paymentInitiated = localStorage.getItem("paymentInitiated");
+     if (paymentInitiated === "true") {
+       toast.success("Payment was successful!");
+       localStorage.removeItem("paymentInitiated"); // Clear the flag
+     }
+   }, []);
 
+
+ useEffect(() => {
+    fetchAllProducts();
+  }, [fetchAllProducts]);
 
   useEffect(() => {
     setProducts(allProducts);
-     fetchAllProducts();
-  }, [allProducts,fetchAllProducts]);
+  }, [allProducts]);
 
   return (
     <div className="h-screen flex flex-col">
