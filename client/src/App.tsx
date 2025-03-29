@@ -10,6 +10,7 @@ import AddProducts from "./pages/Products/AddProducts";
 import SearchedProducts from "./pages/Products/SearchedProducts";
 import Dashboard from "./pages/AdminDashboard/Dashboard";
 import Cart from "./pages/Cart/Cart";
+import PaymentSuccess from "./pages/Payment/PaymentSuccess"
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,9 @@ function App() {
         <Route path="/product/add-product" element={<AddProducts />} />
         <Route path="/product/search" element={<SearchedProducts />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+
+
       </Routes>
     </BrowserRouter>
   );

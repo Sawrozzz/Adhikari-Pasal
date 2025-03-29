@@ -68,3 +68,7 @@ export const initializeKhaltiPayment = async (details) => {
     console.error("Error initializing Khalti payment:");
   }
 };
+
+//test function that return the pidx after the initialization of payment
+
+
