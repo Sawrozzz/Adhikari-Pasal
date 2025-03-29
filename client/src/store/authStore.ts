@@ -11,9 +11,9 @@ const useAuthStore = create((set) => ({
   // isLoggedIn: localStorage.getItem("token") ? true : false,
   isLoggedIn: !!localStorage.getItem("token"),
   allUsers: [],
-  profileData:null,
-  loading:false,
-  error:null,
+  profileData: null,
+  loading: false,
+  error: null,
 
   fetchUserProfile: async () => {
     const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -22,66 +22,60 @@ const useAuthStore = create((set) => ({
     const userDetails = decodeToken(token);
     const userId = userDetails?.userId;
 
-    
-
     if (!user || !token) {
       console.error("User is not logged in.");
       return;
     }
 
     try {
-      const response = await axios.get(`${baseURL}/profile/${userId}`)
-      set({profileData:response.data})
-
+      const response = await axios.get(`${baseURL}/profile/${userId}`);
+      set({ profileData: response.data });
     } catch (error) {
       console.error("Error while fetching profile", error.message);
     }
   },
 
-  uploadProfilePicture: async(file) =>{
-   const token = localStorage.getItem("token");
-   
-    if(!token){
+  uploadProfilePicture: async (file) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
       console.error("User is not logged In");
       return;
     }
-     const userDetails = decodeToken(token);
-     const userId = userDetails?.userId;
-     
-       if (!userId) {
-         console.error("Invalid token.");
-         return;
-       }
+    const userDetails = decodeToken(token);
+    const userId = userDetails?.userId;
+
+    if (!userId) {
+      console.error("Invalid token.");
+      return;
+    }
 
     const formData = new FormData();
-    
-    formData.append("profileImage", file)
-    
-    set({loading:true,error:null})
 
-    try{
+    formData.append("profileImage", file);
+
+    set({ loading: true, error: null });
+
+    try {
       const response = await axios.post(`${baseURL}/profile/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
       });
-       set((state) => ({
-         profileData: {
-           ...state.profileData,
-           profileImage: response.data.profileImage,
-         },
-         loading: false,
-       }));
-       return response.data;
+      set((state) => ({
+        profileData: {
+          ...state.profileData,
+          profileImage: response.data.profileImage,
+        },
+        loading: false,
+      }));
+      return response.data;
+    } catch (error) {
+      console.error("Error occur while uploading profile", error.message);
 
-    }catch(error){
-      console.error("Error occur while uploading profile",error.message)
-
-       set({ loading: false, error: error.message });
+      set({ loading: false, error: error.message });
     }
-   
-
   },
 
   signup: async (userData) => {
@@ -116,7 +110,7 @@ const useAuthStore = create((set) => ({
       localStorage.setItem("user", JSON.stringify(loggedInUserData));
     } catch (error) {
       console.error("Error occured while login:", error);
-      set({error:error.message, loading:false})
+      set({ error: error.message, loading: false });
       alert(error);
     }
   },
@@ -134,6 +128,24 @@ const useAuthStore = create((set) => ({
     console.log("User logged out successfully.");
   },
 
+  delete: async (email: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await axios.delete(`${baseURL}/delete`, {
+        data: { email },
+      });
+
+            set((state) => ({
+              allUsers: state.allUsers.filter((user) => user.email !== email),
+            }));
+    } catch (error) {
+      set({
+        loading: false,
+        error: error.response ? error.response.data.message : error.message,
+      });
+    }
+  },
+
   fetchUsers: async () => {
     try {
       const response = await axios.get(`${baseURL}/allUsers`);
@@ -146,6 +158,7 @@ const useAuthStore = create((set) => ({
       alert(error);
     }
   },
+  // setAllUsers: (users) => set({ allUsers: users }),
 }));
 
 export default useAuthStore;

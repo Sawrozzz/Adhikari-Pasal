@@ -33,17 +33,22 @@ const usePaymentStore = create((set) => ({
         itemIds,
         website_url: `${website_url}`,
       });
-      console.log("clicked");
+      // console.log("clicked");
       
       console.log(response.data);
       const paymentUrl = response.data.payment.payment_url;
 
+      // console.log(paymentUrl)
+
+    setTimeout(() => {
       window.location.href = paymentUrl;
+    }, 2000);
 
       set({
         orders: [response.data.purchasedItemData],
         loading: false,
       });
+        localStorage.setItem("paymentInitiated", "true");
     } catch (error) {
       console.error("Error while initialize payment", error.message);
       set({ error: error.message, loading: false });
