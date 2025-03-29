@@ -24,7 +24,7 @@ export const verifyKhaltiPayment = async (pidx) => {
   };
   try {
     const response = await axios.request(reqOptions);
-  // console.log("verifying data",response.data);
+  console.log("verifying data",response.data);
     return response.data;
   } catch (error) {
     console.error("Error verifying Khalti payment:");

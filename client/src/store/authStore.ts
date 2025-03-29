@@ -4,7 +4,6 @@ import { decodeToken } from "../utils/tokenDecoded";
 
 const baseURL = "http://localhost:5000/users";
 
-
 const useAuthStore = create((set) => ({
   user: JSON.parse(localStorage.getItem("user") || "null"),
   token: localStorage.getItem("token"),
@@ -14,6 +13,7 @@ const useAuthStore = create((set) => ({
   profileData: null,
   loading: false,
   error: null,
+  allUsersCount: 0,
 
   fetchUserProfile: async () => {
     const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -79,12 +79,9 @@ const useAuthStore = create((set) => ({
   },
 
   signup: async (userData) => {
-    // console.log("clicked again");
-
     try {
       const response = await axios.post(`${baseURL}/register`, userData);
       const { userData: registeredData } = response.data;
-      console.log(response.data.userData);
 
       set({
         user: registeredData,
@@ -135,9 +132,9 @@ const useAuthStore = create((set) => ({
         data: { email },
       });
 
-            set((state) => ({
-              allUsers: state.allUsers.filter((user) => user.email !== email),
-            }));
+      set((state) => ({
+        allUsers: state.allUsers.filter((user) => user.email !== email),
+      }));
     } catch (error) {
       set({
         loading: false,
@@ -152,13 +149,13 @@ const useAuthStore = create((set) => ({
 
       set({
         allUsers: response.data.data,
+        allUsersCount: response.data.userCount,
       });
     } catch (error) {
       console.error("Error while fetching users:", error);
       alert(error);
     }
   },
-  // setAllUsers: (users) => set({ allUsers: users }),
 }));
 
 export default useAuthStore;

@@ -9,6 +9,7 @@ const useProductStore = create((set) => ({
   searchResults: [],
   loading: false,
   error: null,
+  productLength:0,
 
   createProduct: async (productData) => {
     set({ loading: true, error: null });
@@ -41,6 +42,7 @@ const useProductStore = create((set) => ({
 
       set({
         allProducts: response.data.data,
+        productLength:response.data.productLength,
       });
     } catch (error) {
       set({ loading: false, error: error.message });
