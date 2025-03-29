@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+// import useAuthStore from "./authStore";
+import { decodeToken } from "../utils/tokenDecoded";
 
 const baseURL = "http://localhost:5000/payment";
 const website_url = "http://localhost:5000";
@@ -20,6 +22,7 @@ const usePaymentStore = create((set) => ({
   orders: [],
   loading: false,
   error: null,
+  token:localStorage.getItem("token"),
 
   initializePayment: async (
     itemIds: string[],
@@ -27,12 +30,30 @@ const usePaymentStore = create((set) => ({
   ) => {
     set({ loading: true, error: null });
     console.log("clicked");
+  const token = localStorage.getItem("token");
+
+  const userDetails = decodeToken(token);
+  const userId = userDetails?.userId;
+    if (!userId || !token) {
+      console.error("User is not logged in.");
+      set({ loading: false });
+      return;
+    }
+
     
     try {
-      const response = await axios.post(`${baseURL}/initialize-khalti`, {
-        itemIds,
-        website_url: `${website_url}`,
-      });
+     const response = await axios.post(
+       `${baseURL}/initialize-khalti`,
+       {
+         itemIds,
+         website_url: `${website_url}`,
+       },
+       {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       }
+     );
       // console.log("clicked");
       
       console.log(response.data);
