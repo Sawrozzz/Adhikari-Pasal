@@ -77,7 +77,6 @@ const useProductStore = create((set) => ({
   removeProduct: async (productId: string, email: string) => {
     set({ loading: true, error: null });
     try {
-      console.log(`Attempting to delete product with ID: ${productId}`);
       const response = await axios.delete(`${baseURL}/delete/${productId}`, {
         data: { email },
       });

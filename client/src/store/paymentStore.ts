@@ -34,6 +34,8 @@ const usePaymentStore = create((set) => ({
 
   const userDetails = decodeToken(token);
   const userId = userDetails?.userId;
+  console.log(userDetails);
+  
     if (!userId || !token) {
       console.error("User is not logged in.");
       set({ loading: false });
@@ -42,6 +44,8 @@ const usePaymentStore = create((set) => ({
 
     
     try {
+      // console.log("clicked try");
+      
      const response = await axios.post(
        `${baseURL}/initialize-khalti`,
        {
@@ -54,7 +58,6 @@ const usePaymentStore = create((set) => ({
          },
        }
      );
-      // console.log("clicked");
       
       console.log(response.data);
       const paymentUrl = response.data.payment.payment_url;
