@@ -50,9 +50,6 @@ export const register = async (req, res) => {
     const token = jwt.sign(
       { userId: newUser._id, email: newUser.email, role: newUser.role },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "3h",
-      }
     );
     const filterdUser = await User.find({ email }).select("-password");
     res.status(201).json({
