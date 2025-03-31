@@ -1,4 +1,6 @@
+import { model } from "mongoose";
 import { Order } from "../model/order-model.js";
+import User from "../model/user-model.js";
 
 //code to display all orders
 export const displayAllOrders = async (req, res) => {
@@ -11,7 +13,7 @@ export const displayAllOrders = async (req, res) => {
 
     const totalSumOfTotalPrices = orders.reduce((sum, order) => {
       return sum + (order.order_data.totalPrice || 0);
-    }, 0);
+    }, 0)
 
     const orderCount = orders.length;
 
@@ -27,6 +29,66 @@ export const displayAllOrders = async (req, res) => {
   }
 };
 
+//code to display individaual orders
+export const displayIndividualOrders = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Find the user by userId
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "No user found",
+        success: false,
+      });
+    }
+
+    // Get the order IDs from the user
+    const orderIds = user.orders;
+    if (!orderIds.length) {
+      return res.status(404).json({
+        message: "No orders found for this user",
+        success: false,
+      });
+    }
+
+    // Find the orders by order IDs
+    const orders = await Order.find({ _id: { $in: orderIds } })
+      .populate("user", "fullName")
+      .populate({
+        path: "order_data",
+        populate: {
+          path: "items",
+          populate: {
+            path: "product",
+            model: "product",
+          },
+          model: "cartItem",
+        },
+      });
+
+    if (!orders.length) {
+      return res.status(404).json({
+        message: "No orders found for this user",
+        success: false,
+      });
+    }
+
+    const orderItems = orders.map((order) => order.order_data); // this gives output
+    return res.status(200).json({
+      message: "Order retrieved successfully",
+      success: true,
+      order: orders,
+      orderItems: orderItems,
+    });
+  } catch (error) {
+    console.error("Error while fetching user orders", error.message);
+    return res.status(500).json({
+      message: "Server error while fetching individual orders",
+      success: false,
+    });
+  }
+};
 //code to update individual orders, [order status]
 export const updateOrders = async (req, res) => {
   const { status } = req.body;
