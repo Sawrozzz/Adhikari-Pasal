@@ -59,7 +59,7 @@ export const initializeKhalti = async (req, res) => {
     const purchasedItemData = await PurchasedItem.create({
       items: itemIds,
       paymentMethod: "khalti",
-      totalPrice: totalPrice * 100,
+      totalPrice: totalPrice *100,
     });
 
 
@@ -75,6 +75,8 @@ export const initializeKhalti = async (req, res) => {
     });
 
     console.log("Purchased Data",purchasedItemData)
+
+    // const totalPriceCentToRupee = (PurchasedItem.totalPrice) / 100;
 
     
 

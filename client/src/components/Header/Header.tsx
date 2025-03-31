@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import Navbar from "../NavBar/Navbar";
 import SearchBar from "../SearchBar/SearchBar";
 import logo from '../../assets/logo.png' 
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { ShoppingCart, Menu, X, Bell, BellIcon } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import { useNavigate } from "react-router-dom";
+import NotificationDropdown from "../Notification/Notification";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,7 +32,7 @@ const Header = () => {
       <Navbar />
       <Link
         to="/cart"
-        className="ml-4 p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset "
+        className="ml-4 p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none "
       >
         <ShoppingCart className="h-6 w-6" />
         {cartNotification > 0 && (
@@ -40,6 +41,7 @@ const Header = () => {
           </span>
         )}
       </Link>
+      <NotificationDropdown />
       <div className="ml-4 sm:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -107,6 +109,12 @@ const Header = () => {
                   className="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
                 >
                   Profile
+                </Link>
+                <Link
+                  to="/user/order"
+                  className="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+                >
+                  Orders
                 </Link>
                 <li
                   onClick={handleLogout}

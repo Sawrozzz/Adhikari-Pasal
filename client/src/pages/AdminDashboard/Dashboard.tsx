@@ -13,9 +13,6 @@ import OrderList from "../../components/OrderList/OrderList";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
-  const [data] = useState({
-    revenue: 50000,
-  });
 
   const { allUsersCount, fetchUsers } = useAuthStore();
   const { productLength, fetchAllProducts } = useProductStore();
