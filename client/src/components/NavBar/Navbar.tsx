@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
-import useCartStore from "../../store/cartStore";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
+import { Bell } from "lucide-react";
+
 
 const Navbar = () => {
   const { user, isLoggedIn, logout } = useAuthStore();
@@ -69,6 +69,13 @@ const Navbar = () => {
           >
             Profile
           </Link>
+          <Link
+            to="/user/order"
+            className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-200"
+          >
+            Your Orders
+          </Link>
+      
           <div
             onClick={handleLogout}
             className="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-200"
