@@ -67,7 +67,7 @@ const OrderTable = () => {
                 </select>
               </td>
               <td className="py-3 px-2 sm:px-6">
-                {order.order_data.totalPrice}
+                {(order.order_data.totalPrice)/100}
               </td>
 
               <td className="py-3 px-2 sm:px-6">
