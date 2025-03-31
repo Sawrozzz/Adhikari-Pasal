@@ -11,6 +11,7 @@ import SearchedProducts from "./pages/Products/SearchedProducts";
 import Dashboard from "./pages/AdminDashboard/Dashboard";
 import Cart from "./pages/Cart/Cart";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess"
+import Orders from "./pages/Orders/Orders";
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,7 @@ function App() {
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/user/all-users" element={<AllUsers />} />
         <Route path="/user/profile" element={<Profile />} />
+        <Route path="/user/order" element={<Orders />} />
         <Route path="/product/add-product" element={<AddProducts />} />
         <Route path="/product/search" element={<SearchedProducts />} />
         <Route path="/dashboard" element={<Dashboard />} />
