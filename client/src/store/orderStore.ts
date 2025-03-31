@@ -48,7 +48,7 @@ const useOrderStore = create<OrderState>((set) => ({
       set({
         orders: response.data.orders,
         orderCount: response.data.orderCount,
-        totalSumOfTotalPrices: response.data.totalSumOfTotalPrices,
+        totalSumOfTotalPrices: response.data.totalSumOfTotalPrices /100,
         loading: false,
       });
     } catch (error) {
