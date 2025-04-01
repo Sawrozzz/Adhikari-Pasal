@@ -4,10 +4,11 @@ import axios from "axios";
 import { decodeToken } from "../utils/tokenDecoded";
 
 const baseURL = "http://localhost:5000/payment";
-const website_url = "http://localhost:5000";
+// const website_url = "http://localhost:5000";
 
 export interface PaymentData {
   orders: [];
+  orderNotification:string[],
   loading: boolean;
   error: string | null;
   initializePayment: (
@@ -23,18 +24,18 @@ const usePaymentStore = create((set) => ({
   loading: false,
   error: null,
   token:localStorage.getItem("token"),
+  orderNotification:[],
 
   initializePayment: async (
     itemIds: string[],
     website_url: string
   ) => {
     set({ loading: true, error: null });
-    console.log("clicked");
+    // console.log("clicked");
   const token = localStorage.getItem("token");
 
   const userDetails = decodeToken(token);
   const userId = userDetails?.userId;
-  console.log(userDetails);
   
     if (!userId || !token) {
       console.error("User is not logged in.");
@@ -59,7 +60,7 @@ const usePaymentStore = create((set) => ({
        }
      );
       
-      console.log(response.data);
+      // console.log(response.data);
       const paymentUrl = response.data.payment.payment_url;
 
       // console.log(paymentUrl)
@@ -71,6 +72,7 @@ const usePaymentStore = create((set) => ({
       set({
         orders: [response.data.purchasedItemData],
         loading: false,
+        orderNotification: [response.data.notification.message],
       });
         localStorage.setItem("paymentInitiated", "true");
     } catch (error) {
