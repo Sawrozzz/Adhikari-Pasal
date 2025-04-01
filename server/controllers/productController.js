@@ -1,5 +1,6 @@
 import Product from "../model/product-model.js";
 import User from "../model/user-model.js";
+import Notification from "../model/notification-model.js";
 
 //code to create product
 export const create = async (req, res) => {
@@ -25,10 +26,16 @@ export const create = async (req, res) => {
 
     const savedProduct = await newProduct.save();
 
+    const notification = await Notification.create({
+      message: `New product #${savedProduct.name} is in sell `,
+      product: savedProduct._id,
+    });
+
     res.status(201).json({
       message: "Product created successfully",
       product: savedProduct,
       success: true,
+      notification: notification,
     });
   } catch (error) {
     console.error("Error while creating product:", error.message);
@@ -53,7 +60,7 @@ export const allProducts = async (req, res) => {
       message: "Products retrieved successfully",
       success: true,
       data: products,
-      productLength:productLength,
+      productLength: productLength,
     });
   } catch (error) {
     console.log("Error during getting all products", error.message);

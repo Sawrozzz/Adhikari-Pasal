@@ -7,6 +7,7 @@ import PurchasedItem from "../model/purchased-item-model.js";
 import { cartItem } from "../model/cart-model.js";
 import { Order } from "../model/order-model.js";
 import User from "../model/user-model.js";
+import Notification from "../model/notification-model.js";
 
 export const initializeKhalti = async (req, res) => {
   try {
@@ -59,10 +60,8 @@ export const initializeKhalti = async (req, res) => {
     const purchasedItemData = await PurchasedItem.create({
       items: itemIds,
       paymentMethod: "khalti",
-      totalPrice: totalPrice *100,
+      totalPrice: totalPrice * 100,
     });
-
-
 
     const purchaseOrderName = productNames.join(" and ");
 
@@ -74,12 +73,6 @@ export const initializeKhalti = async (req, res) => {
       website_url,
     });
 
-    console.log("Purchased Data",purchasedItemData)
-
-    // const totalPriceCentToRupee = (PurchasedItem.totalPrice) / 100;
-
-    
-
     const order = await Order.create({
       user: userId,
       payment_method: "khalti",
@@ -87,6 +80,8 @@ export const initializeKhalti = async (req, res) => {
       status: "created",
       address: user.address,
     });
+
+    const populatedOrder = await Order.findById(order._id).populate("user");
 
     await User.findByIdAndUpdate(
       userId,
@@ -98,12 +93,18 @@ export const initializeKhalti = async (req, res) => {
       }
     );
 
+    const notification = await Notification.create({
+      message: `An order of #${purchaseOrderName} done by #${populatedOrder.user.fullName}`,
+      order:populatedOrder._id
+    });
+
     res.status(200).json({
       success: true,
       purchasedItemData,
       purchaseOrderName,
       payment: paymentInitiate,
       order: order,
+      notification: notification,
     });
   } catch (error) {
     console.error("Error while initializing Khalti payment", error);

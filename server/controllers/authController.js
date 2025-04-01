@@ -1,7 +1,9 @@
 import User from "../model/user-model.js";
-
+import Notification from "../model/notification-model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { cartItem } from "../model/cart-model.js";
+import { Order } from "../model/order-model.js";
 
 //code for register user
 export const register = async (req, res) => {
@@ -45,17 +47,23 @@ export const register = async (req, res) => {
       phone,
       role: role || "NORMAL",
     });
-    await newUser.save(); // save the user info in database
+    await newUser.save();
+
+    const notification = await Notification.create({
+      message: `A user with email ${email} had been registered`,
+      user: newUser._id,
+    });
 
     const token = jwt.sign(
       { userId: newUser._id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET
     );
     const filterdUser = await User.find({ email }).select("-password");
     res.status(201).json({
       message: "User registered successfully",
       success: true,
       userData: filterdUser,
+      notification: notification,
       token,
     });
   } catch (error) {
@@ -172,8 +180,12 @@ export const deleteUser = async (req, res) => {
       });
     }
 
+    //delete associated data
+    await cartItem.deleteMany({ user: deleteUser._id });
+    await Order.deleteMany({ user: deleteUser._id });
+
     return res.status(200).json({
-      message: "User deleted successfully",
+      message: "User deleted successfully with associate data",
       success: true,
     });
   } catch (error) {
