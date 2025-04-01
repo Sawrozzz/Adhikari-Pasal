@@ -30,6 +30,7 @@ const Header = () => {
         </Link>
       </div>
       <Navbar />
+      <NotificationDropdown />
       <Link
         to="/cart"
         className="ml-4 p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none "
@@ -41,7 +42,7 @@ const Header = () => {
           </span>
         )}
       </Link>
-      <NotificationDropdown />
+
       <div className="ml-4 sm:hidden">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
