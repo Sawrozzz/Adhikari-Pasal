@@ -9,6 +9,7 @@ import productRouter from "./routes/productRouter.js"
 import cartRouter from "./routes/cartRouter.js"
 import paymentRouter from "./routes/paymentRouter.js"
 import orderRouter from "./routes/orderRouter.js"
+import notificationRouter from "./routes/notificationRouter.js"
 
 const app = express();
 app.use(express.json());
@@ -40,6 +41,7 @@ app.use("/products",productRouter)
 app.use("/carts", cartRouter);
 app.use("/payment",paymentRouter);
 app.use("/order",orderRouter)
+app.use("/notification", notificationRouter);
 
 
 app.listen(PORT, () => {
