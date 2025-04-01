@@ -14,6 +14,7 @@ const useAuthStore = create((set) => ({
   loading: false,
   error: null,
   allUsersCount: 0,
+  userNotification:[],
 
   fetchUserProfile: async () => {
     const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -29,7 +30,9 @@ const useAuthStore = create((set) => ({
 
     try {
       const response = await axios.get(`${baseURL}/profile/${userId}`);
-      set({ profileData: response.data });
+      set({
+        profileData: response.data,
+      });
     } catch (error) {
       console.error("Error while fetching profile", error.message);
     }
@@ -86,6 +89,7 @@ const useAuthStore = create((set) => ({
       set({
         user: registeredData,
         isLoggedIn: false,
+        notification: [response.data.notification.message],
       });
       alert("User signup successFull, you can login now");
     } catch (error) {

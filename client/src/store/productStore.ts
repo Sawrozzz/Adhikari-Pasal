@@ -9,7 +9,8 @@ const useProductStore = create((set) => ({
   searchResults: [],
   loading: false,
   error: null,
-  productLength:0,
+  productLength: 0,
+  productNotification: [],
 
   createProduct: async (productData) => {
     set({ loading: true, error: null });
@@ -20,9 +21,15 @@ const useProductStore = create((set) => ({
           "Content-Type": "multipart/form-data",
         },
       });
+
+      // console.log(response.data)
+      
       set((state) => ({
         products: [...state.products, response.data.product], // Correctly returning the object here
+        productNotification: response.data.notification.message,
       }));
+
+      
 
       return response.data;
     } catch (error) {
@@ -42,7 +49,7 @@ const useProductStore = create((set) => ({
 
       set({
         allProducts: response.data.data,
-        productLength:response.data.productLength,
+        productLength: response.data.productLength,
       });
     } catch (error) {
       set({ loading: false, error: error.message });
@@ -50,23 +57,23 @@ const useProductStore = create((set) => ({
     }
   },
 
-  searchProducts: async (category:string) => {
+  searchProducts: async (category: string) => {
     set({ loading: true, error: null });
     try {
       const response = await axios.get(
         `${baseURL}/search?category=${category}`
       );
-      if (!response.data||response.data.data.length ===0) {
+      if (!response.data || response.data.data.length === 0) {
         set({
           searchResults: [],
           loading: false,
         });
-           throw new Error("No products found");
+        throw new Error("No products found");
       }
       // console.log("Search Results:", response.data);
       set({
         searchResults: response.data.data,
-        loading:false,
+        loading: false,
       });
     } catch (error) {
       console.error("Error while searching products:", error.message);
@@ -82,9 +89,9 @@ const useProductStore = create((set) => ({
       });
 
       set((state) => {
-        const updatedProducts = [...state.allProducts.filter(
-          (item) => item._id !== productId
-        )];
+        const updatedProducts = [
+          ...state.allProducts.filter((item) => item._id !== productId),
+        ];
         return {
           products: updatedProducts,
           error: null,
