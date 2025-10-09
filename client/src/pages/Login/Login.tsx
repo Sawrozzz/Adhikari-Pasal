@@ -3,6 +3,7 @@ import useAuthStore from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
+  console.log("Hello")
 
   const { login } = useAuthStore();
 
