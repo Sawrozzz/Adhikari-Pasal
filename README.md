@@ -79,3 +79,21 @@ server/
 │ ├── orderStatus.js
 |
 ├──app.js
+
+
+### Frontend (`/client`)
+
+client/
+│
+├── index.html
+├── tsconfig.json
+├── vite.config.ts
+├── package.json
+├── /src
+│ ├── main.tsx
+│ ├── App.tsx
+│ ├── /assets
+│ ├── /components
+│ ├── /pages
+│ ├── /store
+│ └── /utils
