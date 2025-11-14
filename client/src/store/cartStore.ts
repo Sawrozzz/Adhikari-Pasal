@@ -21,7 +21,6 @@ const useCartStore = create((set) => ({
       });
 
       const updatedCartItem = response.data.cart; // Get the new or updated cart item
-      console.log(updatedCartItem);
 
       set((state) => {
         try {
@@ -75,8 +74,6 @@ const useCartStore = create((set) => ({
           return state; // Return previous state if an error occurs
         }
       });
-
-      console.log("Cart Notification Updated:");
     } catch (error) {
       set({ error: error.message, loading: false });
     }

@@ -14,8 +14,6 @@ const SearchedProducts = () => {
   const category = getQueryParam("category");
 
   useEffect(() => {
-    console.log(category);
-
     if (category) {
       searchProducts(category);
     }

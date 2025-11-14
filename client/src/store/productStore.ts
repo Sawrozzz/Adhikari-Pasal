@@ -22,7 +22,6 @@ const useProductStore = create((set) => ({
         },
       });
 
-      // console.log(response.data)
       
       set((state) => ({
         products: [...state.products, response.data.product], // Correctly returning the object here
@@ -70,7 +69,6 @@ const useProductStore = create((set) => ({
         });
         throw new Error("No products found");
       }
-      // console.log("Search Results:", response.data);
       set({
         searchResults: response.data.data,
         loading: false,

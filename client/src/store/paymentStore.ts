@@ -31,7 +31,6 @@ const usePaymentStore = create((set) => ({
     website_url: string
   ) => {
     set({ loading: true, error: null });
-    // console.log("clicked");
   const token = localStorage.getItem("token");
 
   const userDetails = decodeToken(token);
@@ -45,7 +44,6 @@ const usePaymentStore = create((set) => ({
 
     
     try {
-      // console.log("clicked try");
       
      const response = await axios.post(
        `${baseURL}/initialize-khalti`,
@@ -60,10 +58,8 @@ const usePaymentStore = create((set) => ({
        }
      );
       
-      // console.log(response.data);
       const paymentUrl = response.data.payment.payment_url;
 
-      // console.log(paymentUrl)
 
     setTimeout(() => {
       window.location.href = paymentUrl;

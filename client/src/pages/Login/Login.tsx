@@ -3,7 +3,6 @@ import useAuthStore from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
-  console.log("Hello")
 
   const { login } = useAuthStore();
 
@@ -25,7 +24,6 @@ const Login = () => {
   };
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      {/* Left Section with Image */}
       <div className="hidden md:flex w-full md:w-1/2  items-center justify-center">
         <img
           src="https://i.pinimg.com/originals/89/29/e8/8929e801e61c00035c84b6f02a28622f.jpg"
@@ -34,7 +32,6 @@ const Login = () => {
         />
       </div>
 
-      {/* Right Section with Form */}
       <div className="w-full md:w-1/2 bg-white flex items-center justify-center">
         <div className="p-8 w-full max-w-md">
           <h1 className="text-3xl font-bold text-purple-600 mb-4">

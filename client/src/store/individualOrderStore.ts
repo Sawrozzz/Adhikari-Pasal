@@ -20,7 +20,6 @@ const useIndividualOrderStore = create((set) => ({
     try {
       const response = await fetch(`http://localhost:5000/order/${userId}`);
       const data = await response.json();
-      console.log(data);
 
       if (data) {
         // Transform API data to match our component structure
@@ -58,33 +57,10 @@ const useIndividualOrderStore = create((set) => ({
   deleteOrder: async (orderId) => {
     set({ isLoading: true, error: null });
     try {
-      // We're just removing it from the local state
-      // In a real app, you'd call an API to delete it
       set((state) => ({
         orders: state.orders.filter((order) => order.orderId !== orderId),
         isLoading: false,
       }));
-
-      // Uncomment below for actual API implementation
-      /*
-      const response = await fetch(`http://localhost:5000/order/${orderId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          // Include auth headers as needed
-        }
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        set(state => ({ 
-          orders: state.orders.filter(order => order.orderId !== orderId),
-          isLoading: false 
-        }));
-      } else {
-        throw new Error(data.message || 'Failed to delete order');
-      }
-      */
     } catch (error) {
       console.error("Error deleting order:", error);
       set({ error: error.message, isLoading: false });

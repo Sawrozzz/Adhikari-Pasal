@@ -5,12 +5,8 @@ import useNotificationStore from "../../store/notificationStore";
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    notifications,
-    loading,
-    error,
-    fetchNotifications,
-  } = useNotificationStore();
+  const { notifications, loading, error, fetchNotifications } =
+    useNotificationStore();
 
   useEffect(() => {
     fetchNotifications();
@@ -23,8 +19,6 @@ const NotificationDropdown = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  console.log("Notifications in component:", notifications); // Log notifications in component
-
   return (
     <div className="relative">
       <button
@@ -32,7 +26,6 @@ const NotificationDropdown = () => {
         className="ml-4 p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
       >
         <Bell className="w-5 h-5" />
-
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-md shadow-lg z-10">

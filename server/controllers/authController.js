@@ -67,7 +67,7 @@ export const register = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log("Error occured", error.message);
+    console.error(error.message || "Server Error");
     res.status(500).json({
       message: "Server Error",
     });
@@ -152,7 +152,7 @@ export const allUsers = async (req, res) => {
       userCount: userCount,
     });
   } catch (error) {
-    console.log("Error during getting Users", error.message);
+    console.error("Error during getting Users", error.message);
     res.status(500).json({
       message: "Server Error",
       success: false,
@@ -216,7 +216,7 @@ export const all = async (req, res) => {
       userCount: userCount,
     });
   } catch (error) {
-    console.log("Error during getting Users", error.message);
+    console.error("Error during getting Users", error.message);
     res.status(500).json({
       message: "Server Error",
       success: false,
@@ -239,7 +239,7 @@ export const profile = async (req, res) => {
     }
     return res.json(user);
   } catch (error) {
-    console.log("Error during getting Users", error.message);
+    console.error("Error during getting Users", error.message);
     res.status(500).json({
       message: "Error while fetching profile",
       success: false,
@@ -250,8 +250,6 @@ export const profile = async (req, res) => {
 export const uploadProfilePicture = async (req, res) => {
   try {
     const userId = req.user.userId;
-
-    // console.log(userId);
 
     // Find the user by ID
     const user = await User.findById(userId);

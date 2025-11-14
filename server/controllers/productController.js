@@ -63,7 +63,7 @@ export const allProducts = async (req, res) => {
       productLength: productLength,
     });
   } catch (error) {
-    console.log("Error during getting all products", error.message);
+    console.error("Error during getting all products", error.message);
     res.status(500).json({
       message: "Server Error",
       success: false,
