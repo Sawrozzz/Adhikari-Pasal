@@ -23,7 +23,10 @@ export const addToCart = async (req, res) => {
         .status(404)
         .json({ message: "Product not found", success: false });
 
-    let cartItemEntry = await cartItem.findOne({ product: productId, user:user._id });
+    let cartItemEntry = await cartItem.findOne({
+      product: productId,
+      user: user._id,
+    });
     if (cartItemEntry) {
       cartItemEntry.quantity += quantity || 1;
       cartItemEntry.price = product.price * cartItemEntry.quantity;
@@ -34,7 +37,7 @@ export const addToCart = async (req, res) => {
     } else {
       //create new cart item
       cartItemEntry = new cartItem({
-        user:user._id,
+        user: user._id,
         product: productId,
         quantity: quantity || 1,
         price: product.price * (quantity || 1),
@@ -89,14 +92,14 @@ export const displayCart = async (req, res) => {
         success: false,
       });
     }
-       if (!user.cart||user.cart.length === 0) {
-         return res.status(200).json({
-           message: "Cart is empty",
-           success: true,
-           cart: [],
-           cartCount: 0,
-         });
-       }
+    if (!user.cart || user.cart.length === 0) {
+      return res.status(200).json({
+        message: "Cart is empty",
+        success: true,
+        cart: [],
+        cartCount: 0,
+      });
+    }
     const cartCount = user.cart.length;
     // Return the cart with populated product details
     return res.status(200).json({
@@ -133,13 +136,10 @@ export const deleteCart = async (req, res) => {
       });
     }
 
-    // console.log("user",user);
     // Find and delete the cart item for this product
     const cartDelete = await cartItem.findOneAndDelete({
       _id: cartId,
     });
-
-    // console.log(cartItem);
 
     if (!cartDelete) {
       return res.status(404).json({
@@ -198,7 +198,6 @@ export const updateCart = async (req, res) => {
         success: false,
       });
     }
-
 
     //find product for price calculation
 

@@ -28,7 +28,6 @@ const useNotificationStore = create<NotificationState>((set) => ({
     try {
       const response = await axios.get(`${baseURL}/all`);
       const data = response.data.notification; // Extract the notifications array
-      console.log("Fetched notifications:", data); // Log fetched data
       set({
         notifications: data,
         newNotificationCount: data.length,

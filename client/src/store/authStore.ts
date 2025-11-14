@@ -123,15 +123,14 @@ const useAuthStore = create((set) => ({
       isLoggedIn: false,
     });
 
-    // Remove token from localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    console.log("User logged out successfully.");
   },
 
   delete: async (email: string) => {
     set({ loading: true, error: null });
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await axios.delete(`${baseURL}/delete`, {
         data: { email },
       });

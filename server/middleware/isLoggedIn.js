@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 
 export const isloggedIn = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  // console.log(authHeader)
   if (!authHeader) {
     return res.status(401).json({
       message: "Access denied. Please log in first.",
@@ -21,7 +20,6 @@ export const isloggedIn = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    // console.log(decoded);
     next();
   } catch (error) {
     return res.status(401).json({

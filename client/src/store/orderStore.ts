@@ -43,7 +43,6 @@ const useOrderStore = create<OrderState>((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.get(`${baseURL}/allOrders`);
-      console.log(response.data);
 
       set({
         orders: response.data.orders,
@@ -63,7 +62,6 @@ const useOrderStore = create<OrderState>((set) => ({
       if (!token) {
         throw new Error("Token not found");
       }
-      console.log("clicked");
 
       const response = await axios.patch(
         `${baseURL}/updateOrder/${orderId}`,
@@ -74,7 +72,6 @@ const useOrderStore = create<OrderState>((set) => ({
           },
         }
       );
-      console.log(response.data);
 
       set((state) => ({
         orders: state.orders.map((order) =>
@@ -91,7 +88,6 @@ const useOrderStore = create<OrderState>((set) => ({
   deleteOrder: async (orderId: string) => {
     set({ loading: true, error: null });
     try {
-      console.log("working");
 
       const token = localStorage.getItem("token");
       if (!token) {

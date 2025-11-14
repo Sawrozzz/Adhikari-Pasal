@@ -54,8 +54,7 @@ const AddProducts = () => {
     if (formData.image) {
       productData.append("image", formData.image);
     }
-    const result = await createProduct(productData);
-    console.log(result);
+   await createProduct(productData);
     navigate("/");
   };
 

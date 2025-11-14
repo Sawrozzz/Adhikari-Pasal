@@ -9,11 +9,9 @@ export const displayAllOrders = async (req, res) => {
       .populate("user", "fullName")
       .populate("order_data", "totalPrice");
 
-    // console.log(orders);
-
     const totalSumOfTotalPrices = orders.reduce((sum, order) => {
       return sum + (order.order_data.totalPrice || 0);
-    }, 0)
+    }, 0);
 
     const orderCount = orders.length;
 
@@ -94,7 +92,6 @@ export const updateOrders = async (req, res) => {
   const { status } = req.body;
   const orderId = req.params.id;
 
-  console.log(status, "and", orderId);
   try {
     const validStatus = [
       "created",
@@ -109,7 +106,6 @@ export const updateOrders = async (req, res) => {
     }
 
     const order = await Order.findById(orderId);
-    // console.log(order);
     if (!order) {
       return res
         .status(404)
@@ -138,7 +134,6 @@ export const updateOrders = async (req, res) => {
 
 export const deleteOrders = async (req, res) => {
   const orderId = req.params.id;
-  console.log(orderId);
   try {
     const order = await Order.findByIdAndDelete(orderId);
     if (!order) {
