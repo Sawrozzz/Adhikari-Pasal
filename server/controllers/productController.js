@@ -33,9 +33,11 @@ export const create = async (req, res) => {
 
     res.status(201).json({
       message: "Product created successfully",
-      product: savedProduct,
       success: true,
-      notification: notification,
+      data: {
+        product: savedProduct,
+        notification: notification,
+      }
     });
   } catch (error) {
     console.error("Error while creating product:", error.message);
@@ -59,8 +61,10 @@ export const allProducts = async (req, res) => {
     res.status(200).json({
       message: "Products retrieved successfully",
       success: true,
-      data: products,
-      productLength: productLength,
+      data: {
+        products: products,
+        count: productLength,
+      }
     });
   } catch (error) {
     console.error("Error during getting all products", error.message);
@@ -136,7 +140,9 @@ export const removeProduct = async (req, res) => {
     return res.status(200).json({
       message: "Product removed successfully",
       success: true,
-      productList: productList,
+      data: {
+        deletedProduct: productList,
+      }
     });
   } catch (error) {
     console.error("Error while deleting product", error.message);

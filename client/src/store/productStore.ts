@@ -12,7 +12,7 @@ const useProductStore = create((set) => ({
   productLength: 0,
   productNotification: [],
 
-  createProduct: async (productData) => {
+  createProduct: async (productData: any) => {
     set({ loading: true, error: null });
 
     try {
@@ -23,15 +23,15 @@ const useProductStore = create((set) => ({
       });
 
       
-      set((state) => ({
-        products: [...state.products, response.data.product], // Correctly returning the object here
-        productNotification: response.data.notification.message,
+      set((state: any) => ({
+        products: [...state.products, response.data.data.product], // Correctly returning the object here
+        productNotification: response.data.data.notification.message,
       }));
 
       
 
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       set({ error: error.message, loading: false });
       console.error("Error while creating product", error);
     }
@@ -47,10 +47,10 @@ const useProductStore = create((set) => ({
       }
 
       set({
-        allProducts: response.data.data,
-        productLength: response.data.productLength,
+        allProducts: response.data.data.products,
+        productLength: response.data.data.count,
       });
-    } catch (error) {
+    } catch (error: any) {
       set({ loading: false, error: error.message });
       console.error("Error while fetching products:", error);
     }
@@ -73,7 +73,7 @@ const useProductStore = create((set) => ({
         searchResults: response.data.data,
         loading: false,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error while searching products:", error.message);
       set({ loading: false, error: error.message });
     }
@@ -82,13 +82,13 @@ const useProductStore = create((set) => ({
   removeProduct: async (productId: string, email: string) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.delete(`${baseURL}/delete/${productId}`, {
+      await axios.delete(`${baseURL}/delete/${productId}`, {
         data: { email },
       });
 
-      set((state) => {
+      set((state: any) => {
         const updatedProducts = [
-          ...state.allProducts.filter((item) => item._id !== productId),
+          ...state.allProducts.filter((item: any) => item._id !== productId),
         ];
         return {
           products: updatedProducts,
@@ -96,7 +96,7 @@ const useProductStore = create((set) => ({
           loading: false,
         };
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting product:", error);
       set({ loading: false, error: error.message });
     }

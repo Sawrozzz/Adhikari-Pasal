@@ -20,9 +20,9 @@ const useCartStore = create((set) => ({
         quantity,
       });
 
-      const updatedCartItem = response.data.cart; // Get the new or updated cart item
+      const updatedCartItem = response.data.data.cart; // Get the new or updated cart item
 
-      set((state) => {
+      set((state: any) => {
         try {
           // Ensure `updatedCartItem` exists before proceeding
           if (!updatedCartItem || !updatedCartItem.product) {
@@ -35,7 +35,7 @@ const useCartStore = create((set) => ({
 
           // Find index of existing cart item
           const existingCartItemIndex = state.cart.findIndex(
-            (item) => item?.product?._id === updatedCartItem.product._id
+            (item: any) => item?.product?._id === updatedCartItem.product._id
           );
 
           let updatedCart;
@@ -50,19 +50,19 @@ const useCartStore = create((set) => ({
 
           // 🛠 Fix: Prevent `reduce` from breaking if `updatedCart` has `undefined` items
           const validCartItems = updatedCart.filter(
-            (item) => item && item.discountedPrice
+            (item: any) => item && item.discountedPrice
           );
 
           // Calculate total discounted price safely
           const newTotalDiscountedPrice = validCartItems.reduce(
-            (total, item) => total + item.discountedPrice * item.quantity,
+            (total: number, item: any) => total + item.discountedPrice * item.quantity,
             0
           );
 
           return {
             cart: updatedCart,
             cartCount: validCartItems.reduce(
-              (count, item) => count + item.quantity,
+              (count: number, item: any) => count + item.quantity,
               0
             ),
             totalDiscountedPrice: newTotalDiscountedPrice,
@@ -90,15 +90,16 @@ const useCartStore = create((set) => ({
 
       if (data.success) {
         set({
-          cart: data.cart || [], // Ensure cart is always an array
-          cartCount: data.cartCount,
+          cart: data.data.cart || [], // Ensure cart is always an array
+          cartCount: data.data.count,
           loading: false,
           cartNotification: 0,
         });
       } else {
         console.error(data.message);
       }
-    } catch (error) {
+      set({ loading: false, error: error.message });
+    } catch (error: any) {
       set({ loading: false, error: error.message });
     }
   },
@@ -106,13 +107,13 @@ const useCartStore = create((set) => ({
   removeCart: async (email: string, cartId: string) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.delete(`${baseURL}/delete-cart/${cartId}`, {
+      await axios.delete(`${baseURL}/delete-cart/${cartId}`, {
         data: { email },
       });
 
-      set((state) => ({
+      set((state: any) => ({
         // cart: state.cart.filter((item) => item.id !== productId),
-        cart: [...state.cart.filter((item) => item._id !== cartId)],
+        cart: [...state.cart.filter((item: any) => item._id !== cartId)],
         error: null,
         cartCount: state.cartCount - 1,
         loading: false,
@@ -134,15 +135,15 @@ const useCartStore = create((set) => ({
         quantity,
       });
 
-      const updatedCartItem = response.data.cartItem;
+      const updatedCartItem = response.data.data.cartItem;
 
       // Update cart in state
-      set((state) => {
-        const updatedCart = state.cart.map((item) =>
+      set((state: any) => {
+        const updatedCart = state.cart.map((item: any) =>
           item._id === cartId ? updatedCartItem : item
         );
         const newTotalAmount = updatedCart.reduce(
-          (total, item) => total + item.discountedPrice * item.quantity,
+          (total: number, item: any) => total + item.discountedPrice * item.quantity,
           0
         );
         return {

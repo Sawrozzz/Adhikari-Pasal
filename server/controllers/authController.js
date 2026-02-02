@@ -62,9 +62,11 @@ export const register = async (req, res) => {
     res.status(201).json({
       message: "User registered successfully",
       success: true,
-      userData: filterdUser,
-      notification: notification,
-      token,
+      data: {
+        user: filterdUser,
+        notification: notification,
+        token,
+      },
     });
   } catch (error) {
     console.error(error.message || "Server Error");
@@ -102,12 +104,14 @@ export const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       success: true,
-      token,
-      userData: {
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role,
-        picture: user.picture,
+      data: {
+        token,
+        user: {
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          picture: user.picture,
+        },
       },
     });
   } catch (error) {
@@ -148,8 +152,10 @@ export const allUsers = async (req, res) => {
     res.status(200).json({
       message: "Users retrieved successfully",
       success: true,
-      data: users, // Send the users data in the response
-      userCount: userCount,
+      data: {
+        users: users,
+        count: userCount,
+      }
     });
   } catch (error) {
     console.error("Error during getting Users", error.message);
@@ -212,8 +218,10 @@ export const all = async (req, res) => {
     res.status(200).json({
       message: "Users retrieved successfully",
       success: true,
-      data: users, // Send the users data in the response
-      userCount: userCount,
+      data: {
+        users: users,
+        count: userCount,
+      },
     });
   } catch (error) {
     console.error("Error during getting Users", error.message);
@@ -237,7 +245,11 @@ export const profile = async (req, res) => {
         .status(404)
         .json({ message: "User not found", success: false });
     }
-    return res.json(user);
+    return res.status(200).json({
+      success: true,
+      message: "User profile retrieved successfully",
+      data: user
+    });
   } catch (error) {
     console.error("Error during getting Users", error.message);
     res.status(500).json({
@@ -275,7 +287,9 @@ export const uploadProfilePicture = async (req, res) => {
     return res.status(200).json({
       message: "Profile picture upload successful",
       success: true,
-      picture: user.picture, // Optionally include the new picture path in the response
+      data: {
+        picture: user.picture,
+      }
     });
   } catch (error) {
     console.error("Error uploading profile picture:", error);
