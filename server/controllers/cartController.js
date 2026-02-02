@@ -55,8 +55,10 @@ export const addToCart = async (req, res) => {
     }
     res.status(200).json({
       message: "Product added to cart",
-      cart: cartItemEntry,
       success: true,
+      data: {
+        cart: cartItemEntry,
+      }
     });
   } catch (error) {
     console.error("Error while adding to cart", error.message);
@@ -96,8 +98,10 @@ export const displayCart = async (req, res) => {
       return res.status(200).json({
         message: "Cart is empty",
         success: true,
-        cart: [],
-        cartCount: 0,
+        data: {
+          cart: [],
+          count: 0,
+        }
       });
     }
     const cartCount = user.cart.length;
@@ -105,8 +109,10 @@ export const displayCart = async (req, res) => {
     return res.status(200).json({
       message: "Cart fetched successfully",
       success: true,
-      cart: user.cart,
-      cartCount: cartCount,
+      data: {
+        cart: user.cart,
+        count: cartCount,
+      }
     });
   } catch (error) {
     console.error("Error while diplaying Carts", error.message);
@@ -157,7 +163,9 @@ export const deleteCart = async (req, res) => {
     return res.status(200).json({
       message: "Product removed from cart successfully",
       success: true,
-      cart: user.cart,
+      data: {
+        cart: user.cart,
+      }
     });
   } catch (error) {
     console.error("Error while deleting Carts", error.message);
@@ -238,7 +246,9 @@ export const updateCart = async (req, res) => {
     return res.status(200).json({
       message: "Cart item updated successfully",
       success: true,
-      cartItem: updatedCartItem,
+      data: {
+        cartItem: updatedCartItem,
+      }
     });
   } catch (error) {
     console.error("Error while updating cart", error.message);

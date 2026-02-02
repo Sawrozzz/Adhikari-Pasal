@@ -20,32 +20,32 @@ const useAuthStore = create((set) => ({
     const user = JSON.parse(localStorage.getItem("user") || "null");
     const token = localStorage.getItem("token");
 
-    const userDetails = decodeToken(token);
-    const userId = userDetails?.userId;
-
     if (!user || !token) {
       console.error("User is not logged in.");
       return;
     }
 
+    const userDetails: any = decodeToken(token);
+    const userId = userDetails?.userId;
+
     try {
       const response = await axios.get(`${baseURL}/profile/${userId}`);
       set({
-        profileData: response.data,
+        profileData: response.data.data,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error while fetching profile", error.message);
     }
   },
 
-  uploadProfilePicture: async (file) => {
+  uploadProfilePicture: async (file: File) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
       console.error("User is not logged In");
       return;
     }
-    const userDetails = decodeToken(token);
+    const userDetails: any = decodeToken(token);
     const userId = userDetails?.userId;
 
     if (!userId) {
@@ -66,42 +66,42 @@ const useAuthStore = create((set) => ({
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
       });
-      set((state) => ({
+      set((state: any) => ({
         profileData: {
           ...state.profileData,
-          profileImage: response.data.profileImage,
+          profileImage: response.data.data.picture,
         },
         loading: false,
       }));
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error occur while uploading profile", error.message);
 
       set({ loading: false, error: error.message });
     }
   },
 
-  signup: async (userData) => {
+  signup: async (userData: any) => {
     try {
       const response = await axios.post(`${baseURL}/register`, userData);
-      const { userData: registeredData } = response.data;
+      const { user: registeredData } = response.data.data;
 
       set({
         user: registeredData,
         isLoggedIn: false,
-        notification: [response.data.notification.message],
+        notification: [response.data.data.notification.message],
       });
       alert("User signup successFull, you can login now");
-    } catch (error) {
+    } catch (error: any) {
       console.error("SignUp failed:", error);
-      alert(error);
+      alert(error.message || "Signup failed");
     }
   },
 
-  login: async (userData) => {
+  login: async (userData: any) => {
     try {
       const response = await axios.post(`${baseURL}/login`, userData);
-      const { token, userData: loggedInUserData } = response.data;
+      const { token, user: loggedInUserData } = response.data.data;
       set({
         user: loggedInUserData,
         token,
@@ -112,7 +112,7 @@ const useAuthStore = create((set) => ({
     } catch (error) {
       console.error("Error occured while login:", error);
       set({ error: error.message, loading: false });
-      alert(error);
+      alert(error.message || "Login failed");
     }
   },
 
@@ -130,15 +130,14 @@ const useAuthStore = create((set) => ({
   delete: async (email: string) => {
     set({ loading: true, error: null });
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await axios.delete(`${baseURL}/delete`, {
+      await axios.delete(`${baseURL}/delete`, {
         data: { email },
       });
 
-      set((state) => ({
-        allUsers: state.allUsers.filter((user) => user.email !== email),
+      set((state: any) => ({
+        allUsers: state.allUsers.filter((user: any) => user.email !== email),
       }));
-    } catch (error) {
+    } catch (error: any) {
       set({
         loading: false,
         error: error.response ? error.response.data.message : error.message,
@@ -151,12 +150,12 @@ const useAuthStore = create((set) => ({
       const response = await axios.get(`${baseURL}/allUsers`);
 
       set({
-        allUsers: response.data.data,
-        allUsersCount: response.data.userCount,
+        allUsers: response.data.data.users,
+        allUsersCount: response.data.data.count,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error while fetching users:", error);
-      alert(error);
+      alert(error.message || "Fetching users failed");
     }
   },
 }));
